@@ -22,14 +22,21 @@ import javax.imageio.ImageIO;
 
 
 public class Node   {
+	protected Color fillcolor = new Color(111,111,111);
+	public static GraphBorder graphborder = new GraphBorder(-1);
+
+//	public GraphBorder getGraphborder() {
+//		return graphborder;
+//	}
+//	public void setGraphborder(GraphBorder graphborder) {
+//		this.graphborder = graphborder;
+//	}
 	public static void zero () {
 		Node.allnodes.clear();
 		Node.counter = new AtomicLong (0l);
 		RNode.rnodecount = new AtomicLong (0l);
 		TNode.tnodecount = new AtomicLong (0l);
-		
 	}
-	protected Color fillcolor = new Color(111,111,111);
 	public Color getFillcolor() {
 		return fillcolor;
 	}
@@ -40,23 +47,18 @@ public class Node   {
 		this.fillcolor = new Color(r,g,b);
 		}
 	public void node2drender ( Graphics graphics,GraphOrientation go) {
-
 		Point3D pt = this.getPosition();
 		PixelPoint2D p2d = mapAPointTothePixelWorld(pt,go);
 		this.drawNodeShape(graphics, p2d);
 		this.drawNodeLabel(graphics, p2d);
-	
-		
 	}
 	public void drawNodeShape(Graphics graphics,PixelPoint2D p2d) {
 		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
 		drawAlignedOval(graphics,p2d,ovalsize);
-		
 	}
 	public void drawNodeLabel(Graphics graphics,PixelPoint2D p2d) {
 		drawAlignedString (graphics,p2d,this.toString());
 	}
-
 	//, int width_pixelworld, int  height_pixelworld
 	public static PixelPoint2D mapAPointTothePixelWorld (Point3D p3d, GraphOrientation go ) {
 		double x = p3d.getX();
@@ -65,8 +67,8 @@ public class Node   {
 		if (go == GraphOrientation.LefttoRight) {// only map y
 			//double ttllen = graphborder.getYmax() - graphborder.getYmin();
 			double newy = y - graphborder.getYmin();
-			int intx = (int)((x + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
+			int intx = (int)((x + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			p2d = new PixelPoint2D(intx,inty);
 		}
 		if (go == GraphOrientation.RighttoLeft) {// only map y
@@ -74,41 +76,28 @@ public class Node   {
 			double newy = y - graphborder.getYmin();
 			double newx = graphborder.getXmax() - x ;
 
-			int intx = (int)((newx + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
+			int intx = (int)((newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			
-			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			p2d = new PixelPoint2D(intx,inty);
 		}
 		if (go == GraphOrientation.ToptoBottom) {// only map y
-//			//double ttllen = graphborder.getYmax() - graphborder.getYmin();
-//			double newy = y - graphborder.getYmin();
-//			int intx = (int)((x + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-//			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-//			p2d = new PixelPoint2D(intx,inty);
 			double newx = y - graphborder.getYmin();
 			double newy = x;
-			int intx = (int)((newx + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
+			int intx = (int)((newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			p2d = new PixelPoint2D(intx,inty);
 
 		}
 		if (go == GraphOrientation.BottomtoTop) {// only map y
-//			//double ttllen = graphborder.getYmax() - graphborder.getYmin();
-//			double newy = y - graphborder.getYmin();
-//			int intx = (int)((x + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-//			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-//			p2d = new PixelPoint2D(intx,inty);
 			double newx = y - graphborder.getYmin();
 			double newy = graphborder.getXmax() - x ;
-			int intx = (int)((newx + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
-			int inty = (int)((newy + Bag.graphboder)* (1.0d *Bag.OneDoubleequalpixels));
+			int intx = (int)((newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			p2d = new PixelPoint2D(intx,inty);
-
 		}
 		return p2d;
-	
 	}
-	public static GraphBorder graphborder = new GraphBorder(-1);
 	public static void updateGraphborder () {
 		Iterator<Long> it  = tierstorage.keySet().iterator();
 		Tier tier = null; 
@@ -362,15 +351,15 @@ public class Node   {
 	public static int calculateImageWidth (GraphOrientation go ) {
 		System.out.println( graphborder.getWidth() + "\t"+ graphborder.getHeight());
 		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.graphboder)*2.0d );
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
 		else 
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.graphboder)*2.0d );
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
 	}
 	public static int calculateImageHeight  (GraphOrientation go ) {
 		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.graphboder)*2.0d );
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.boderspace)*2.0d );
 		else 
-			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.graphboder)*2.0d );
+			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
 	}
 	public static void drawAlignedOval (Graphics graphics, PixelPoint2D p2d, int ovalsize ) {
 		graphics.drawOval(p2d.getX() - (ovalsize/2), p2d.getY()- (ovalsize/2) - (Bag.fontsize /3), ovalsize, ovalsize);

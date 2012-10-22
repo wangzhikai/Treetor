@@ -6,7 +6,7 @@ public class Bag {
 	public static double nodespace = 1.3d * nodesize;
 	//public static final double nearestcousin = 1.5d *nodesize;
 	public static double familydistance = 2.0d * nodespace;
-	public static double graphboder = 3.0d * nodespace;
+	public static double boderspace = 3.0d * nodespace;
 	public static int OneDoubleequalpixels = 15;
 	public static int fontsize = 14;
 	public static int fontwidth = 8; // not accurate.

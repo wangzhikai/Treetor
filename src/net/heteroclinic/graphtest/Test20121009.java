@@ -19,7 +19,7 @@ public class Test20121009 {
 		Bag.nodespace = 1.3d * Bag.nodesize;
 
 		Bag.familydistance = 2.0d * Bag.nodespace;
-		Bag.graphboder = 3.0d * Bag.nodespace;
+		Bag.boderspace = 3.0d * Bag.nodespace;
 		Bag.OneDoubleequalpixels = 15;
 		Bag.fontsize = 14;
 		Bag.fontwidth = 8; // not accurate.
