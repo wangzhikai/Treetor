@@ -23,44 +23,32 @@ import javax.imageio.ImageIO;
 
 public class Node   {
 	protected Color fillcolor = new Color(111,111,111);
-	public static GraphBorder graphborder = new GraphBorder(-1);
+	protected Node alignsubnode = null;
+	protected Map <Long, Edge >   localedges = new HashMap<Long, Edge >();
+	protected Point3D position = new Point3D(0.0d,0.0d,0.0d);
+	protected Geotype geotype = Geotype.Equator; // Equator, Northern, Southern
+	protected Map<Long, Node> subnodes = new LinkedHashMap<Long, Node>();	
+	protected long id = -1L;
+	protected Node parentnode = null;
+	protected String label;
 
-//	public GraphBorder getGraphborder() {
-//		return graphborder;
-//	}
-//	public void setGraphborder(GraphBorder graphborder) {
-//		this.graphborder = graphborder;
-//	}
-	public static void zero () {
+	
+	static public Map<Long, Node> allnodes = new ConcurrentHashMap<Long, Node>();
+	
+	static public GraphBorder graphborder = new GraphBorder(-1);
+	static public Map<Long, Node> nodestorender = new HashMap<Long, Node>();
+	static public Map<Long, Edge> edgestorender = new HashMap<Long, Edge>();
+
+	static protected Map <Long, Tier > tierstorage = new TreeMap<Long, Tier >();	
+	static protected AtomicLong counter = new AtomicLong(0L);
+
+	static public void zero () {
 		Node.allnodes.clear();
 		Node.counter = new AtomicLong (0l);
 		RNode.rnodecount = new AtomicLong (0l);
 		TNode.tnodecount = new AtomicLong (0l);
 	}
-	public Color getFillcolor() {
-		return fillcolor;
-	}
-	public void setFillcolor(Color fillcolor) {
-		this.fillcolor = fillcolor;
-	}
-	public void setFillcolor(int r, int g , int b) {
-		this.fillcolor = new Color(r,g,b);
-		}
-	public void node2drender ( Graphics graphics,GraphOrientation go) {
-		Point3D pt = this.getPosition();
-		PixelPoint2D p2d = mapAPointTothePixelWorld(pt,go);
-		this.drawNodeShape(graphics, p2d);
-		this.drawNodeLabel(graphics, p2d);
-	}
-	public void drawNodeShape(Graphics graphics,PixelPoint2D p2d) {
-		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
-		drawAlignedOval(graphics,p2d,ovalsize);
-	}
-	public void drawNodeLabel(Graphics graphics,PixelPoint2D p2d) {
-		drawAlignedString (graphics,p2d,this.toString());
-	}
-	//, int width_pixelworld, int  height_pixelworld
-	public static PixelPoint2D mapAPointTothePixelWorld (Point3D p3d, GraphOrientation go ) {
+	static public PixelPoint2D mapAPointTothePixelWorld (Point3D p3d, GraphOrientation go ) {
 		double x = p3d.getX();
 		double y = p3d.getY();
 		PixelPoint2D p2d = null;
@@ -98,7 +86,7 @@ public class Node   {
 		}
 		return p2d;
 	}
-	public static void updateGraphborder () {
+	static public void updateGraphborder () {
 		Iterator<Long> it  = tierstorage.keySet().iterator();
 		Tier tier = null; 
 		while (it.hasNext()) {
@@ -113,21 +101,75 @@ public class Node   {
 		}
 		graphborder.setWidth(graphborder.getXmax() - graphborder.getXmin());
 		graphborder.setHeight(graphborder.getYmax() - graphborder.getYmin());
+	}	
+	static public int calculateImageWidth (GraphOrientation go ) {
+		System.out.println( graphborder.getWidth() + "\t"+ graphborder.getHeight());
+		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
+		else 
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
 	}
+	static public int calculateImageHeight  (GraphOrientation go ) {
+		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.boderspace)*2.0d );
+		else 
+			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
+	}
+	static public void drawAlignedOval (Graphics graphics, PixelPoint2D p2d, int ovalsize ) {
+		graphics.drawOval(p2d.getX() - (ovalsize/2), p2d.getY()- (ovalsize/2) - (Bag.fontsize /3), ovalsize, ovalsize);
+	}
+	static public void drawAlignedString (Graphics graphics, PixelPoint2D p2d, String str ) {
+		int len = str.length();
+		int ttlwidth = len * Bag.fontwidth;
+		graphics.drawString(str, p2d.getX() - (ttlwidth/2),p2d.getY());
+		
+	}
+	static public int BFSConstructgetEquatorIndex (int southernnodescount, int northernnodescount, int ttl) {
+		int result = -1;
+		if  (( southernnodescount+ northernnodescount) != ttl)  {
+			result = ttl - southernnodescount - 1;
+		}
+		return result;
+	}
+
 	
-	protected Node alignsubnode = null;
+
+//	public GraphBorder getGraphborder() {
+//		return graphborder;
+//	}
+//	public void setGraphborder(GraphBorder graphborder) {
+//		this.graphborder = graphborder;
+//	}
+
+
 	
 	
-	public static Map<Long, Node> nodestorender = new HashMap<Long, Node>();
-	public static Map<Long, Edge> edgestorender = new HashMap<Long, Edge>();
-	static protected Map <Long, Tier > tierstorage = new TreeMap<Long, Tier >();
-	
-	protected  Map <Long, Edge >   localedges = new HashMap<Long, Edge >();
+	public Color getFillcolor() {
+		return fillcolor;
+	}
+	public void setFillcolor(Color fillcolor) {
+		this.fillcolor = fillcolor;
+	}
+	public void setFillcolor(int r, int g , int b) {
+		this.fillcolor = new Color(r,g,b);
+		}
+	public void node2drender ( Graphics graphics,GraphOrientation go) {
+		Point3D pt = this.getPosition();
+		PixelPoint2D p2d = mapAPointTothePixelWorld(pt,go);
+		this.drawNodeShape(graphics, p2d);
+		this.drawNodeLabel(graphics, p2d);
+	}
+	public void drawNodeShape(Graphics graphics,PixelPoint2D p2d) {
+		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
+		drawAlignedOval(graphics,p2d,ovalsize);
+	}
+	public void drawNodeLabel(Graphics graphics,PixelPoint2D p2d) {
+		drawAlignedString (graphics,p2d,this.toString());
+	}
+	//, int width_pixelworld, int  height_pixelworld
 	public void addALocalEdge ( Edge edge) {
 		localedges.put(edge.getId(), edge);
 	}
-
-	protected Point3D position = new Point3D(0.0d,0.0d,0.0d);
 	public Point3D getPosition() {
 		return position;
 	}
@@ -142,34 +184,12 @@ public class Node   {
 		position.setY(y);
 		position.setZ(z);
 	}
-	
-	protected Geotype geotype = Geotype.Equator; // Equator, Northern, Southern
 	public Geotype getGeotype() {
 		return geotype;
 	}
 	public void setGeotype(Geotype geotype) {
 		this.geotype = geotype;
 	}
-//	public Geotype caculateGeotype () {
-//		if (this.getParentnode() == null)
-//			geotype = Geotype.Equator;
-//		else {
-//			switch (this.getParentnode().geotype) {
-//			case Equator:
-//				
-//				break;
-//			case Northern:
-//				geotype = Geotype.Northern;
-//				break;
-//			case Southern:
-//				geotype = Geotype.Southern;
-//				break;
-//			}
-//		}
-//		
-//		
-//		return geotype;
-//	}
 	public void assignSubnodesGeotype () {
 		if (subnodes.size() <=0) {
 			this.alignsubnode = null;
@@ -257,21 +277,9 @@ public class Node   {
 //			}
 		}
 	}
-
-	
-	
-	// Below is Node, //above is RenderableNode
-	public static Map<Long, Node> allnodes = new ConcurrentHashMap<Long, Node>();
-	protected static AtomicLong counter = new AtomicLong(0L);
-	protected Map<Long, Node> subnodes = new LinkedHashMap<Long, Node>();
 	public Map<Long, Node> getSubnodes() {
 		return subnodes;
 	}
-
-	protected long id = -1L;
-	protected Node parentnode = null;
-	
-	
 	public Node getParentnode() {
 		return parentnode;
 	}
@@ -281,18 +289,12 @@ public class Node   {
 		else 
 			return parentnode.getId();
 	}
-
-
 	public boolean addAChild (Node child ) {
 		return subnodes.put(child.getId(), child) != null;
 	}
-
 	public void setParentnode(Node parentnode) {
 		this.parentnode = parentnode;
 	}
-
-
-	protected String label;
 	public String toString () {
 		return label;
 	}
@@ -301,21 +303,9 @@ public class Node   {
 		label = ""+id;
 		allnodes.put(this.getId(), this);
 	}
-//	public Node(String label) 
-//	{
-//		this.label = label;
-//		id = counter.incrementAndGet();
-//		allnodes.put(this.getId(), this);
-//	}
-
-
-
 	public long getId() {
 		return id;
 	}
-
-
-
 	// level starting from 0L to ...
 	public long getLevel() {
 		if (null == this.getParentnode())
@@ -324,17 +314,11 @@ public class Node   {
 			return this.getParentnode().getLevel() + 1L;
 
 	}
-
-	
-
 	public void DFSprint(String header) {
-
 		if (subnodes == null || subnodes.size() == 0) {
 			String tmps = header + "n|" + this.getId() + ".";
 			System.out.println(tmps);
-
 		} else {
-
 			Iterator<Long> it = subnodes.keySet().iterator();
 			while (it.hasNext()) {
 				Long key = it.next();
@@ -343,32 +327,8 @@ public class Node   {
 			}
 		}
 	}
-	static final double doubleconverttopixelratio = 20d;
 	public int doubletopixel (double val) {
-		return (int)(doubleconverttopixelratio*val);
-	}
-	
-	public static int calculateImageWidth (GraphOrientation go ) {
-		System.out.println( graphborder.getWidth() + "\t"+ graphborder.getHeight());
-		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-		else 
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-	}
-	public static int calculateImageHeight  (GraphOrientation go ) {
-		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.boderspace)*2.0d );
-		else 
-			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-	}
-	public static void drawAlignedOval (Graphics graphics, PixelPoint2D p2d, int ovalsize ) {
-		graphics.drawOval(p2d.getX() - (ovalsize/2), p2d.getY()- (ovalsize/2) - (Bag.fontsize /3), ovalsize, ovalsize);
-	}
-	public static void drawAlignedString (Graphics graphics, PixelPoint2D p2d, String str ) {
-		int len = str.length();
-		int ttlwidth = len * Bag.fontwidth;
-		graphics.drawString(str, p2d.getX() - (ttlwidth/2),p2d.getY());
-		
+		return (int)(Bag.OneDoubleequalpixels*val);
 	}
 	public void image2dRenderWithoutUpdateBorder ( String fn, GraphOrientation go) {
 		
@@ -442,8 +402,6 @@ public class Node   {
 			e.printStackTrace();
 		}
 	}
-	
-
 	public void image2dRender ( String fn, GraphOrientation go) {
 		
 		updateGraphborder ();
@@ -516,7 +474,6 @@ public class Node   {
 			e.printStackTrace();
 		}
 	}
-	
 	public void BFSGraphConstruction () {
 		Node.nodestorender.clear();
 		Node.edgestorender.clear();
@@ -883,15 +840,6 @@ public class Node   {
 			stack = stackref;			
 		}
 	}
-	// 0 first element ...; -1 none, ttl greater than 1
-	static public int BFSConstructgetEquatorIndex (int southernnodescount, int northernnodescount, int ttl) {
-		int result = -1;
-		if  (( southernnodescount+ northernnodescount) != ttl)  {
-			result = ttl - southernnodescount - 1;
-		}
-		return result;
-	}
-	
 	public void BFSprint() {
 		Map<Long, Node> stack = new LinkedHashMap<Long, Node> ();
 		System.out.println(this.getId());
@@ -932,9 +880,7 @@ public class Node   {
 		}
 	}
 
-	// TODO make it thread safe
-	// TODO you have not detect cycle yet
-	public static int addNodeSubnodePair(long parentnodeid,
+	static public int addNodeSubnodePair(long parentnodeid,
 			long childnodeid) {
 		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
 		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
@@ -949,9 +895,7 @@ public class Node   {
 		return 1;
 	}
 	
-	// TODO make it thread safe
-	// TODO you have not detect cycle yet
-	public static int removeNodeLeafSubnodePair(long parentnodeid,
+	static public int removeNodeLeafSubnodePair(long parentnodeid,
 			long childnodeid) {
 		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
 		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
