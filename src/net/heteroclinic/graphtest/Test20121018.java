@@ -3,12 +3,14 @@ package net.heteroclinic.graphtest;
 import java.util.Calendar;
 
 import net.heteroclinic.graph.Bag;
+import net.heteroclinic.graph.GraphBorder;
 import net.heteroclinic.graph.GraphOrientation;
 import net.heteroclinic.graph.Node;
 import net.heteroclinic.graph.RNode;
 import net.heteroclinic.graph.TNode;
+import net.heteroclinic.graph.Test;
 
-public class Test20121009 {
+public class Test20121018 extends Test{
 
 	/**
 	 * @param args
@@ -25,6 +27,9 @@ public class Test20121009 {
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
 
+		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		Bag.testunitname = "TEST_REMOVE_ONE_R_FROM_RT_TREE";
+		Bag.testresultfiletype = ".png";
 		
 		// TODO Auto-generated method stub
 		new TNode(); //1/1
@@ -62,19 +67,23 @@ public class Test20121009 {
 		Node.allnodes.get(1l).BFSGraphConstruction();
 
 		//TEST TOP to bottom
-		Node.allnodes.get(1l).image2dRender(
-				"C:\\Users\\Graphics\\Desktop\\"
-						+ Calendar.getInstance().getTimeInMillis() + ".png",
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
 				GraphOrientation.ToptoBottom);
 		System.out.println("Picture drawn.");
 		
 		
+		GraphBorder base_graphborder  = Node.allnodes.get(1l).getGraphborder();
+		
+		
 		Node.removeNodeLeafSubnodePair(1,12);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRender(
-				"C:\\Users\\Graphics\\Desktop\\"
-						+ Calendar.getInstance().getTimeInMillis() + ".png",
-				GraphOrientation.ToptoBottom);
+//		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+//				GraphOrientation.ToptoBottom);
+		
+		
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(
+				Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+
 		System.out.println("Picture drawn.");
 
 	}

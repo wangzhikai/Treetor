@@ -9,15 +9,10 @@ import net.heteroclinic.graph.GraphOrientation;
 import net.heteroclinic.graph.Node;
 import net.heteroclinic.graph.RNode;
 import net.heteroclinic.graph.TNode;
+import net.heteroclinic.graph.Test;
 
-public class Test20121008 {
-	public static int getPower( int  base, int p ) {
-		int result = 1;
-		for (int i = 0; i <p ; i++ ) {
-			result *= base;
-		}
-		return result;
-	}
+public class Test20121008_I extends Test{
+
 	public static void main(String[] args) {
 		Bag.tierdistance = 10.0d;
 		Bag.nodesize = 2.5d;
@@ -29,6 +24,10 @@ public class Test20121008 {
 		Bag.fontsize = 14;
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
+
+		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		Bag.testunitname = "TEST_RNODE_TREE";
+		Bag.testresultfiletype = ".png";
 
 	
 
@@ -84,9 +83,7 @@ public class Test20121008 {
 //		System.out.println("Picture drawn.");
 		
 		//TEST TOP to bottom
-		Node.allnodes.get(1l).image2dRender(
-				"C:\\Users\\Graphics\\Desktop\\"
-						+ Calendar.getInstance().getTimeInMillis() + ".png",
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
 				GraphOrientation.ToptoBottom);
 		System.out.println("Picture drawn.");
 		

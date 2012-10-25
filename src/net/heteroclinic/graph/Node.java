@@ -34,13 +34,19 @@ public class Node   {
 
 	
 	static public Map<Long, Node> allnodes = new ConcurrentHashMap<Long, Node>();
-	
-	static public GraphBorder graphborder = new GraphBorder(-1);
-	static public Map<Long, Node> nodestorender = new HashMap<Long, Node>();
-	static public Map<Long, Edge> edgestorender = new HashMap<Long, Edge>();
-
-	static protected Map <Long, Tier > tierstorage = new TreeMap<Long, Tier >();	
 	static protected AtomicLong counter = new AtomicLong(0L);
+
+	
+	protected GraphBorder graphborder = new GraphBorder(-1);
+	public GraphBorder getGraphborder() {
+		return graphborder;
+	}
+	public void setGraphborder(GraphBorder graphborder) {
+		this.graphborder = graphborder;
+	}
+	protected Map<Long, Node> nodestorender = new HashMap<Long, Node>();
+	protected Map<Long, Edge> edgestorender = new HashMap<Long, Edge>();
+	protected Map <Long, Tier > tierstorage = new TreeMap<Long, Tier >();	
 
 	static public void zero () {
 		Node.allnodes.clear();
@@ -48,7 +54,7 @@ public class Node   {
 		RNode.rnodecount = new AtomicLong (0l);
 		TNode.tnodecount = new AtomicLong (0l);
 	}
-	static public PixelPoint2D mapAPointTothePixelWorld (Point3D p3d, GraphOrientation go ) {
+	static public PixelPoint2D mapAPointTothePixelWorld (GraphBorder graphborder, Point3D p3d, GraphOrientation go ) {
 		double x = p3d.getX();
 		double y = p3d.getY();
 		PixelPoint2D p2d = null;
@@ -84,9 +90,87 @@ public class Node   {
 			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
 			p2d = new PixelPoint2D(intx,inty);
 		}
+		//System.out.println("p3d: ("+p3d.getX()+","+p3d.getY()+")");
+		//System.out.println("p2d: ("+p2d.getX()+","+p2d.getY()+")");
 		return p2d;
 	}
-	static public void updateGraphborder () {
+	static public int calculateImageWidth (GraphBorder graphborder, GraphOrientation go ) {
+		//System.out.println( graphborder.getWidth() + "\t"+ graphborder.getHeight());
+		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
+		else 
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
+	}
+	static public int calculateImageHeight (GraphBorder graphborder, GraphOrientation go ) {
+		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
+			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.boderspace)*2.0d );
+		else 
+			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
+	}
+	static public void drawAlignedOval (Graphics graphics, PixelPoint2D p2d, int ovalsize ) {
+		graphics.drawOval(p2d.getX() - (ovalsize/2), p2d.getY()- (ovalsize/2) - (Bag.fontsize /3), ovalsize, ovalsize);
+	}
+	static public void drawAlignedString (Graphics graphics, PixelPoint2D p2d, String str ) {
+		int len = str.length();
+		int ttlwidth = len * Bag.fontwidth;
+		graphics.drawString(str, p2d.getX() - (ttlwidth/2),p2d.getY());
+	}
+	static public int BFSConstructgetEquatorIndex (int southernnodescount, int northernnodescount, int ttl) {
+		int result = -1;
+		if  (( southernnodescount+ northernnodescount) != ttl)  {
+			result = ttl - southernnodescount - 1;
+		}
+		return result;
+	}
+	static public int addNodeSubnodePair(long parentnodeid,
+			long childnodeid) {
+		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
+		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
+		Node parent = Node.allnodes.get(parentnodeid);
+		if (parent == null)
+			return -1;
+		Node child = Node.allnodes.get(childnodeid);
+		if (child.getParentnode() != null)
+			return -4;
+		parent.addAChild(child);
+		child.setParentnode(parent);
+		return 1;
+	}
+	static public int removeNodeLeafSubnodePair(long parentnodeid,
+			long childnodeid) {
+		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
+		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
+		Node parent = Node.allnodes.get(parentnodeid);
+		if (parent == null)
+			return -1;
+		Node child = Node.allnodes.get(childnodeid);
+		if (child.getParentnode() == null)
+			return -4;
+		//parent.addAChild(child);
+		//child.setParentnode(parent);
+		if (child.getSubnodes().size()  > 0) {
+			return -3; // you can not remove non-leaf node with this function
+		
+		}
+		Node.allnodes.remove(child.getId());
+		parent.getSubnodes().remove(child.getId());
+		child.setParentnode(null);
+		Node.allnodes.remove(child);
+		
+		return 1;
+	}
+	
+
+//	public GraphBorder getGraphborder() {
+//		return graphborder;
+//	}
+//	public void setGraphborder(GraphBorder graphborder) {
+//		this.graphborder = graphborder;
+//	}
+
+
+	
+	public void updateGraphborder () {
 		Iterator<Long> it  = tierstorage.keySet().iterator();
 		Tier tier = null; 
 		while (it.hasNext()) {
@@ -102,48 +186,6 @@ public class Node   {
 		graphborder.setWidth(graphborder.getXmax() - graphborder.getXmin());
 		graphborder.setHeight(graphborder.getYmax() - graphborder.getYmin());
 	}	
-	static public int calculateImageWidth (GraphOrientation go ) {
-		System.out.println( graphborder.getWidth() + "\t"+ graphborder.getHeight());
-		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getWidth() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-		else 
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight() + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-	}
-	static public int calculateImageHeight  (GraphOrientation go ) {
-		if (go == GraphOrientation.LefttoRight || go == GraphOrientation.RighttoLeft)
-			return (int )(Bag.OneDoubleequalpixels * graphborder.getHeight () +Bag.OneDoubleequalpixels *  (Bag.boderspace)*2.0d );
-		else 
-			return (int )( Bag.OneDoubleequalpixels * graphborder.getWidth () + Bag.OneDoubleequalpixels * (Bag.boderspace)*2.0d );
-	}
-	static public void drawAlignedOval (Graphics graphics, PixelPoint2D p2d, int ovalsize ) {
-		graphics.drawOval(p2d.getX() - (ovalsize/2), p2d.getY()- (ovalsize/2) - (Bag.fontsize /3), ovalsize, ovalsize);
-	}
-	static public void drawAlignedString (Graphics graphics, PixelPoint2D p2d, String str ) {
-		int len = str.length();
-		int ttlwidth = len * Bag.fontwidth;
-		graphics.drawString(str, p2d.getX() - (ttlwidth/2),p2d.getY());
-		
-	}
-	static public int BFSConstructgetEquatorIndex (int southernnodescount, int northernnodescount, int ttl) {
-		int result = -1;
-		if  (( southernnodescount+ northernnodescount) != ttl)  {
-			result = ttl - southernnodescount - 1;
-		}
-		return result;
-	}
-
-	
-
-//	public GraphBorder getGraphborder() {
-//		return graphborder;
-//	}
-//	public void setGraphborder(GraphBorder graphborder) {
-//		this.graphborder = graphborder;
-//	}
-
-
-	
-	
 	public Color getFillcolor() {
 		return fillcolor;
 	}
@@ -153,11 +195,23 @@ public class Node   {
 	public void setFillcolor(int r, int g , int b) {
 		this.fillcolor = new Color(r,g,b);
 		}
-	public void node2drender ( Graphics graphics,GraphOrientation go) {
+	public void node2drender ( GraphBorder base_graphborder,Graphics graphics,GraphOrientation go) {
 		Point3D pt = this.getPosition();
-		PixelPoint2D p2d = mapAPointTothePixelWorld(pt,go);
+		PixelPoint2D p2d = mapAPointTothePixelWorld(base_graphborder, pt,go);
+		
 		this.drawNodeShape(graphics, p2d);
 		this.drawNodeLabel(graphics, p2d);
+		
+		
+//		Edge te = edgestorender.get(it.next());
+//		Point3D pt1 = te.getPoint1().getPosition();
+//		Point3D pt2 = te.getPoint2().getPosition();
+//		Point3D pt3 = new Point3D (pt1.getX() + Bag.nodesize/Bag.edgetrim , pt1.getY(), pt1.getZ());
+//		Point3D pt4 = new Point3D (pt2.getX() - Bag.nodesize/Bag.edgetrim, pt2.getY(), pt2.getZ());
+//
+//		PixelPoint2D p2d1 = mapAPointTothePixelWorld(graphborder, pt3,go);
+//		PixelPoint2D p2d2 = mapAPointTothePixelWorld(graphborder, pt4,go);
+//		graphics.drawLine(p2d1.getX(), p2d1.getY(),p2d2.getX(), p2d2.getY());
 	}
 	public void drawNodeShape(Graphics graphics,PixelPoint2D p2d) {
 		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
@@ -330,14 +384,17 @@ public class Node   {
 	public int doubletopixel (double val) {
 		return (int)(Bag.OneDoubleequalpixels*val);
 	}
-	public void image2dRenderWithoutUpdateBorder ( String fn, GraphOrientation go) {
+	public void image2dRenderWithoutUpdateBorder ( String fn,
+			GraphBorder base_graphborder,
+			GraphOrientation go) {
 		
 		//updateGraphborder ();
 		
 		//int width=512;
 		//int height=512;
-		int img_w = calculateImageWidth (go);
-		int img_h = calculateImageHeight (go);
+		int img_w = calculateImageWidth (base_graphborder, go);
+		int img_h = calculateImageHeight (base_graphborder, go);
+		//System.out.println("img_w:"+img_w+"\t"+ "img_h:"+img_h);
 
 		//String mcap = "testcapcha";
 		//Color background = new Color(204,204,204);
@@ -362,10 +419,10 @@ public class Node   {
 		graphics.setFont(font);
 		
 		
-		Iterator<Long> it = Node.nodestorender.keySet().iterator();
+		Iterator<Long> it = nodestorender.keySet().iterator();
 		while (it.hasNext()) {
-			Node tn = Node.nodestorender.get(it.next());
-			tn.node2drender( graphics, go);
+			Node tn = nodestorender.get(it.next());
+			tn.node2drender( base_graphborder,graphics, go);
 			
 //			Point3D pt = tn.getPosition();
 //			
@@ -373,16 +430,16 @@ public class Node   {
 //			drawAlignedOval(graphics,p2d,ovalsize);
 //			 drawAlignedString (graphics,p2d,tn.toString());
 		}
-		it = Node.edgestorender.keySet().iterator();
+		it = edgestorender.keySet().iterator();
 		while (it.hasNext()) {
-			Edge te = Node.edgestorender.get(it.next());
+			Edge te = edgestorender.get(it.next());
 			Point3D pt1 = te.getPoint1().getPosition();
 			Point3D pt2 = te.getPoint2().getPosition();
 			Point3D pt3 = new Point3D (pt1.getX() + Bag.nodesize/Bag.edgetrim , pt1.getY(), pt1.getZ());
 			Point3D pt4 = new Point3D (pt2.getX() - Bag.nodesize/Bag.edgetrim, pt2.getY(), pt2.getZ());
 
-			PixelPoint2D p2d1 = mapAPointTothePixelWorld(pt3,go);
-			PixelPoint2D p2d2 = mapAPointTothePixelWorld(pt4,go);
+			PixelPoint2D p2d1 = mapAPointTothePixelWorld(base_graphborder, pt3,go);
+			PixelPoint2D p2d2 = mapAPointTothePixelWorld(base_graphborder, pt4,go);
 			graphics.drawLine(p2d1.getX(), p2d1.getY(),p2d2.getX(), p2d2.getY());
 
 		}
@@ -408,9 +465,10 @@ public class Node   {
 		
 		//int width=512;
 		//int height=512;
-		int img_w = calculateImageWidth (go);
-		int img_h = calculateImageHeight (go);
-
+		int img_w = calculateImageWidth (graphborder, go);
+		int img_h = calculateImageHeight (graphborder, go);
+		//System.out.println("img_w:"+img_w+"\t"+ "img_h:"+img_h);
+		
 		//String mcap = "testcapcha";
 		//Color background = new Color(204,204,204);
 		Color fillgraph = new Color(255,255,255);
@@ -434,10 +492,16 @@ public class Node   {
 		graphics.setFont(font);
 		
 		
-		Iterator<Long> it = Node.nodestorender.keySet().iterator();
+		Iterator<Long> it = nodestorender.keySet().iterator();
 		while (it.hasNext()) {
-			Node tn = Node.nodestorender.get(it.next());
-			tn.node2drender( graphics, go);
+			Node tn = nodestorender.get(it.next());
+			tn.node2drender(graphborder, graphics, go);
+
+			
+//			Point3D pt = this.getPosition();
+//			PixelPoint2D p2d = mapAPointTothePixelWorld(graphborder, pt,go);
+//			this.drawNodeShape(graphics, p2d);
+//			this.drawNodeLabel(graphics, p2d);
 			
 //			Point3D pt = tn.getPosition();
 //			
@@ -445,16 +509,16 @@ public class Node   {
 //			drawAlignedOval(graphics,p2d,ovalsize);
 //			 drawAlignedString (graphics,p2d,tn.toString());
 		}
-		it = Node.edgestorender.keySet().iterator();
+		it = edgestorender.keySet().iterator();
 		while (it.hasNext()) {
-			Edge te = Node.edgestorender.get(it.next());
+			Edge te = edgestorender.get(it.next());
 			Point3D pt1 = te.getPoint1().getPosition();
 			Point3D pt2 = te.getPoint2().getPosition();
 			Point3D pt3 = new Point3D (pt1.getX() + Bag.nodesize/Bag.edgetrim , pt1.getY(), pt1.getZ());
 			Point3D pt4 = new Point3D (pt2.getX() - Bag.nodesize/Bag.edgetrim, pt2.getY(), pt2.getZ());
 
-			PixelPoint2D p2d1 = mapAPointTothePixelWorld(pt3,go);
-			PixelPoint2D p2d2 = mapAPointTothePixelWorld(pt4,go);
+			PixelPoint2D p2d1 = mapAPointTothePixelWorld(graphborder, pt3,go);
+			PixelPoint2D p2d2 = mapAPointTothePixelWorld(graphborder, pt4,go);
 			graphics.drawLine(p2d1.getX(), p2d1.getY(),p2d2.getX(), p2d2.getY());
 
 		}
@@ -475,8 +539,8 @@ public class Node   {
 		}
 	}
 	public void BFSGraphConstruction () {
-		Node.nodestorender.clear();
-		Node.edgestorender.clear();
+		nodestorender.clear();
+		edgestorender.clear();
 		
 		Map<Long, Node> stack = new LinkedHashMap<Long, Node> ();
 		Node n = this;
@@ -503,8 +567,7 @@ public class Node   {
 			southernnodescount = 0;
 			northernnodescount = 0;
 			tmplist = new LinkedList <Node >();
-			@SuppressWarnings("unused")
-			int i = 0 ;
+			//int i = 0 ;
 			while (it.hasNext()) {
 				Node tn = stack.get(it.next());
 				tn.assignSubnodesGeotype();
@@ -523,10 +586,10 @@ public class Node   {
 					tn.addALocalEdge(e);
 					
 					//tmpn.setPosition(level *1.0d * Bag.tierdistance, i * Bag.nodespace,0.0d);
-					Node.nodestorender.put(tmpn.getId(),tmpn);
-					Node.edgestorender.put(e.getId(), e);
+					nodestorender.put(tmpn.getId(),tmpn);
+					edgestorender.put(e.getId(), e);
 					tmplist.add(tmpn);
-					i++;
+					//i++;
 				}
 				tmpstack.putAll(subnodes);
 			}
@@ -594,141 +657,6 @@ public class Node   {
 					}
 				} else {// No equator at this level
 
-//					// Case I north only
-//					if (northernnodescount > 0  && southernnodescount <= 0 ){
-//						int northstartindex = -2;
-//						long lastfamilyid = -1;
-//						for (int cursor = northstartindex; cursor>=0 ; cursor--) {
-//							Node currentnode = tmplist.get(cursor);
-//							
-//							long currentfamilyid = currentnode.getFamilyId();
-//							boolean familychanged = false;
-//							if (currentfamilyid != lastfamilyid) {
-//								// process 
-//								familychanged = true;
-//								//lastfamilyid =currentfamilyid ;
-//							} 
-//							double proposed_y1 =  currentnode.getParentnode().getPosition().getY();
-//							double proposed_y2 =  tier.getYmin();
-//							if (familychanged) {
-//								if ( lastfamilyid == -1)
-//									;
-//								else 
-//									proposed_y2 = proposed_y2 - Bag.familydistance;
-//							} else {
-//								proposed_y2 = proposed_y2 - Bag.nodespace;
-//							}
-//							lastfamilyid =currentfamilyid ;
-//							currentnode.setPosition(level *1.0d * Bag.tierdistance, (proposed_y1<proposed_y2)?proposed_y1:proposed_y2, 0.0d);
-//							tier.setYmin(currentnode.getPosition().getY());
-//						}
-//
-//						
-//					} // Case I north only
-//					
-//					// Case II south only
-//					if (southernnodescount > 0  && northernnodescount <= 0) {
-//						long lastfamilyid = -1;
-//						int southstartindex = -1;
-//						if (northernnodescount > 0) {
-//							southstartindex = northernnodescount;
-//						} else
-//							southstartindex = 0;
-//						// System.out.println("southstartindex :" +
-//						// southstartindex+" " +tmplist.get(southstartindex));
-//						for (int cursor = southstartindex; cursor < tmplist
-//								.size(); cursor++) {
-//							Node currentnode = tmplist.get(cursor);
-//							long currentfamilyid = currentnode.getFamilyId();
-//							boolean familychanged = false;
-//							if (currentfamilyid != lastfamilyid) {
-//								// process
-//								familychanged = true;
-//
-//							}
-//							double proposed_y1 = currentnode.getParentnode()
-//									.getPosition().getY();
-//							double proposed_y2 = tier.getYmax();
-//							if (familychanged) {
-//								if ( lastfamilyid == -1)
-//									;
-//								else 
-//									proposed_y2 = proposed_y2 + Bag.familydistance;
-//							} else {
-//								proposed_y2 = proposed_y2 + Bag.nodespace;
-//							}
-//							lastfamilyid = currentfamilyid;
-//							currentnode.setPosition(level * 1.0d
-//									* Bag.tierdistance,
-//									(proposed_y1 > proposed_y2) ? proposed_y1
-//											: proposed_y2, 0.0d);
-//							tier.setYmax(currentnode.getPosition().getY());
-//						}
-//					}// Case II south only
-//					
-//					// Case III both
-//					if (southernnodescount > 0  && northernnodescount > 0) {
-//						int northstartindex = northernnodescount -1;
-//						int southstartindex = northernnodescount;
-//						long northstartfamilyid  =  tmplist.get(northstartindex).getFamilyId();
-//						long southstartfamilyid  =  tmplist.get(southstartindex).getFamilyId();
-//						long lastfamilyid = southstartfamilyid;
-//						for (int cursor = northstartindex; cursor>=0 ; cursor--) {
-//							Node currentnode = tmplist.get(cursor);
-//							
-//							long currentfamilyid = currentnode.getFamilyId();
-//							boolean familychanged = false;
-//							if (currentfamilyid != lastfamilyid) {
-//								// process 
-//								familychanged = true;
-//								//lastfamilyid =currentfamilyid ;
-//							} 
-//							double proposed_y1 =  currentnode.getParentnode().getPosition().getY();
-//							double proposed_y2 =  tier.getYmin();
-//							if (familychanged) {
-//								if (lastfamilyid == southstartfamilyid)
-//									proposed_y2 = proposed_y2 - Bag.familydistance/2.0d;
-//								else 
-//									proposed_y2 = proposed_y2 - Bag.familydistance;
-//							} else {
-//								proposed_y2 = proposed_y2 - Bag.nodespace;
-//							}
-//							lastfamilyid =currentfamilyid ;
-//							currentnode.setPosition(level *1.0d * Bag.tierdistance, (proposed_y1<proposed_y2)?proposed_y1:proposed_y2, 0.0d);
-//							tier.setYmin(currentnode.getPosition().getY());
-//						}
-//						lastfamilyid = northstartfamilyid;
-//						for (int cursor = southstartindex; cursor < tmplist
-//								.size(); cursor++) {
-//							Node currentnode = tmplist.get(cursor);
-//							long currentfamilyid = currentnode.getFamilyId();
-//							boolean familychanged = false;
-//							if (currentfamilyid != lastfamilyid) {
-//								// process
-//								familychanged = true;
-//
-//							}
-//							double proposed_y1 = currentnode.getParentnode()
-//									.getPosition().getY();
-//							double proposed_y2 = tier.getYmax();
-//							if (familychanged) {
-//								if (lastfamilyid == northstartfamilyid)
-//									proposed_y2 = proposed_y2 - Bag.familydistance/2.0d;
-//								else 
-//									proposed_y2 = proposed_y2 + Bag.familydistance;
-//							} else {
-//								proposed_y2 = proposed_y2 + Bag.nodespace;
-//							}
-//							lastfamilyid = currentfamilyid;
-//							currentnode.setPosition(level * 1.0d
-//									* Bag.tierdistance,
-//									(proposed_y1 > proposed_y2) ? proposed_y1
-//											: proposed_y2, 0.0d);
-//							tier.setYmax(currentnode.getPosition().getY());
-//						}
-//
-//					}
-					
 					
 					//BEG original
 					int northstartindex = -2;
@@ -832,7 +760,6 @@ public class Node   {
 							tier.setYmax(currentnode.getPosition().getY());
 						}
 					}
-					//END original
 				}//if (-1 == equatorindex )
 			}//if (tmplist.size() > 0)
 			stackref = tmpstack;
@@ -880,43 +807,6 @@ public class Node   {
 		}
 	}
 
-	static public int addNodeSubnodePair(long parentnodeid,
-			long childnodeid) {
-		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
-		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
-		Node parent = Node.allnodes.get(parentnodeid);
-		if (parent == null)
-			return -1;
-		Node child = Node.allnodes.get(childnodeid);
-		if (child.getParentnode() != null)
-			return -4;
-		parent.addAChild(child);
-		child.setParentnode(parent);
-		return 1;
-	}
-	
-	static public int removeNodeLeafSubnodePair(long parentnodeid,
-			long childnodeid) {
-		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
-		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
-		Node parent = Node.allnodes.get(parentnodeid);
-		if (parent == null)
-			return -1;
-		Node child = Node.allnodes.get(childnodeid);
-		if (child.getParentnode() == null)
-			return -4;
-		//parent.addAChild(child);
-		//child.setParentnode(parent);
-		if (child.getSubnodes().size()  > 0) {
-			return -3; // you can not remove non-leaf node with this function
-		
-		}
-		Node.allnodes.remove(child.getId());
-		parent.getSubnodes().remove(child.getId());
-		child.setParentnode(null);
-		Node.allnodes.remove(child);
-		
-		return 1;
-	}
+
 	
 }

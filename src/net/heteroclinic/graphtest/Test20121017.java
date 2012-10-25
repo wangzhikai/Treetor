@@ -3,12 +3,14 @@ package net.heteroclinic.graphtest;
 import java.util.Calendar;
 
 import net.heteroclinic.graph.Bag;
+import net.heteroclinic.graph.GraphBorder;
 import net.heteroclinic.graph.GraphOrientation;
 import net.heteroclinic.graph.Node;
 import net.heteroclinic.graph.RNode;
 import net.heteroclinic.graph.TNode;
+import net.heteroclinic.graph.Test;
 
-public class Test20121017 {
+public class Test20121017 extends Test{
 
 	/**
 	 * @param args
@@ -25,6 +27,10 @@ public class Test20121017 {
 		Bag.fontsize = 14;
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
+		
+		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		Bag.testunitname = "TEST_RTNODE_TREE";
+		Bag.testresultfiletype = ".png";
 
 		
 		// TODO Auto-generated method stub
@@ -62,7 +68,7 @@ public class Test20121017 {
 		Node.addNodeSubnodePair(13,8);
 		Node.allnodes.get(1l).BFSGraphConstruction();
 		Node.allnodes.get(1l).updateGraphborder();
-		
+		GraphBorder base_graphborder  = Node.allnodes.get(1l).getGraphborder();
 		//System.out.println( Node.allnodes.get(1l).getGraphborder().getWidth() + "\t"+ Node.allnodes.get(1l).getGraphborder().getHeight());
 		
 		Node.zero(); 
@@ -87,75 +93,63 @@ public class Test20121017 {
 		
 		Node.addNodeSubnodePair(1,9);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder,GraphOrientation.ToptoBottom);
 
 		
 		
 		Node.addNodeSubnodePair(1,10);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(), base_graphborder,GraphOrientation.ToptoBottom);
 
 
 		
 		Node.addNodeSubnodePair(1,11);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 
 		Node.addNodeSubnodePair(1,12);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 
 		
 		Node.addNodeSubnodePair(9,2);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 
 		Node.addNodeSubnodePair(9,3);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 
 		Node.addNodeSubnodePair(10,4);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 		
 		Node.addNodeSubnodePair(11,5);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 		Node.addNodeSubnodePair(11,6);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 		
 		Node.addNodeSubnodePair(5,13);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 		
 		Node.addNodeSubnodePair(13,7);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 
 		Node.addNodeSubnodePair(13,8);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder("C:\\Users\\Graphics\\Desktop\\treetortest\\"
-				+ Calendar.getInstance().getTimeInMillis() + ".png", GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 	}
 
 }

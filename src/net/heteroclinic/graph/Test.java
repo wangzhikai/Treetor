@@ -1,4 +1,4 @@
-package net.heteroclinic.graphtest;
+package net.heteroclinic.graph;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

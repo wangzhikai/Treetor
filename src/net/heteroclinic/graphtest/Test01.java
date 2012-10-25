@@ -18,13 +18,11 @@ public class Test01 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-//		int width=150;
-//		int height=40;
+
 		int width=4096;
 		int height=4096;
 
-		String mcap = "testcapcha";
+		String mcap = "drawjpeg";
 		Color background = new Color(204,204,204);
 
 		Color fbl = new Color(0,100,0);
