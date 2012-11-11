@@ -32,7 +32,21 @@ public class Node   {
 	protected Node parentnode = null;
 	protected String label;
 
+	protected Point3D renderoffset = new Point3D(0.0d,0.0d,0.0d);
 	
+	
+	public void setRenderoffset( double x,double y,double z) {
+		renderoffset.setX(x) ;
+		renderoffset.setY(y);
+		renderoffset.setZ(z);
+	}
+	
+	public Point3D getRenderoffset() {
+		return renderoffset;
+	}
+	public void setRenderoffset(Point3D renderoffset) {
+		this.renderoffset = renderoffset;
+	}
 	static public Map<Long, Node> allnodes = new ConcurrentHashMap<Long, Node>();
 	static protected AtomicLong counter = new AtomicLong(0L);
 
@@ -45,6 +59,9 @@ public class Node   {
 		this.graphborder = graphborder;
 	}
 	protected Map<Long, Node> nodestorender = new HashMap<Long, Node>();
+	public Map<Long, Node> getNodestorender() {
+		return nodestorender;
+	}
 	protected Map<Long, Edge> edgestorender = new HashMap<Long, Edge>();
 	protected Map <Long, Tier > tierstorage = new TreeMap<Long, Tier >();	
 
@@ -53,6 +70,50 @@ public class Node   {
 		Node.counter = new AtomicLong (0l);
 		RNode.rnodecount = new AtomicLong (0l);
 		TNode.tnodecount = new AtomicLong (0l);
+	}
+	static public PixelPoint2D mapAPointTotheForestPixelWorld (GraphBorder graphborder, Point3D p3d, GraphOrientation go ) {
+		double x = p3d.getX();
+		double y = p3d.getY();
+		PixelPoint2D p2d = null;
+		double newy = y;
+		double newx = x ;
+
+		if (go == GraphOrientation.LefttoRight) {// only map y
+//			//double ttllen = graphborder.getYmax() - graphborder.getYmin();
+//			//double newy = y - graphborder.getYmin();
+			int intx = (int)((x + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+
+			p2d = new PixelPoint2D(intx,inty);
+		}
+		if (go == GraphOrientation.RighttoLeft) {// only map y
+			//double ttllen = graphborder.getYmax() - graphborder.getYmin();
+//			double newy = y - graphborder.getYmin();
+//			double newx = graphborder.getXmax() - x ;
+
+			int intx = (int)((graphborder.getWidth()- newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			
+			int inty = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			p2d = new PixelPoint2D(intx,inty);
+		}
+		if (go == GraphOrientation.ToptoBottom) {// only map y
+//			double newx = y - graphborder.getYmin();
+//			double newy = x;
+			int intx = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			p2d = new PixelPoint2D(intx,inty);
+
+		}
+		if (go == GraphOrientation.BottomtoTop) {// only map y
+//			double newx = y - graphborder.getYmin();
+//			double newy = graphborder.getXmax() - x ;
+			int intx = (int)((newy + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			int inty = (int)((graphborder.getWidth() - newx + Bag.boderspace)* (1.0d *Bag.OneDoubleequalpixels));
+			p2d = new PixelPoint2D(intx,inty);
+		}
+		//System.out.println("p3d: ("+p3d.getX()+","+p3d.getY()+")");
+		//System.out.println("p2d: ("+p2d.getX()+","+p2d.getY()+")");
+		return p2d;
 	}
 	static public PixelPoint2D mapAPointTothePixelWorld (GraphBorder graphborder, Point3D p3d, GraphOrientation go ) {
 		double x = p3d.getX();
@@ -169,6 +230,44 @@ public class Node   {
 //	}
 
 
+	public void renderAsMemberoftheForest (GraphBorder base_graphborder, Graphics graphics, GraphOrientation go) {
+		Iterator<Long> it = nodestorender.keySet().iterator();
+		while (it.hasNext()) {
+			Node tn = nodestorender.get(it.next());
+			System.out.print("id:"+ tn.getId() + " in renderAsMemberoftheForest().");
+			tn.nodeinforest2drender( base_graphborder,graphics, go);
+		}
+		it = edgestorender.keySet().iterator();
+		while (it.hasNext()) {
+			Edge te = edgestorender.get(it.next());
+			Point3D pt1 = te.getPoint1().getPosition();
+			Point3D pt2 = te.getPoint2().getPosition();
+//			Point3D pt3 = new Point3D (pt1.getX() + Bag.nodesize/Bag.edgetrim , pt1.getY(), pt1.getZ());
+//			Point3D pt4 = new Point3D (pt2.getX() - Bag.nodesize/Bag.edgetrim, pt2.getY(), pt2.getZ());
+			Point3D pt3 = new Point3D (pt1.getX()+renderoffset.getX() + Bag.nodesize/Bag.edgetrim,
+					pt1.getY()+renderoffset.getY(),
+					pt1.getZ()+renderoffset.getZ()
+					); 
+			Point3D pt4 = new Point3D (pt2.getX()+renderoffset.getX() - Bag.nodesize/Bag.edgetrim,
+					pt2.getY()+renderoffset.getY(),
+					pt2.getZ()+renderoffset.getZ()
+					); 
+			
+//			System.out.println("\t"+position+"\t"+renderoffset );
+//			Point3D pt = new Point3D (position.getX()+renderoffset.getX(),
+//					position.getY()+renderoffset.getY(),
+//					position.getZ()+renderoffset.getZ()
+//					); 
+//			PixelPoint2D p2d = mapAPointTotheForestPixelWorld(base_graphborder, pt,go);
+			//PixelPoint2D p2d1 = mapAPointTothePixelWorld(base_graphborder, pt3,go);
+			PixelPoint2D p2d1 = mapAPointTotheForestPixelWorld(base_graphborder, pt3,go);
+			//PixelPoint2D p2d2 = mapAPointTothePixelWorld(base_graphborder, pt4,go);
+			PixelPoint2D p2d2 = mapAPointTotheForestPixelWorld(base_graphborder, pt4,go);
+			graphics.drawLine(p2d1.getX(), p2d1.getY(),p2d2.getX(), p2d2.getY());
+
+		}
+		
+	}
 	
 	public void updateGraphborder () {
 		Iterator<Long> it  = tierstorage.keySet().iterator();
@@ -212,6 +311,18 @@ public class Node   {
 //		PixelPoint2D p2d1 = mapAPointTothePixelWorld(graphborder, pt3,go);
 //		PixelPoint2D p2d2 = mapAPointTothePixelWorld(graphborder, pt4,go);
 //		graphics.drawLine(p2d1.getX(), p2d1.getY(),p2d2.getX(), p2d2.getY());
+	}
+	public void nodeinforest2drender ( GraphBorder base_graphborder,Graphics graphics,GraphOrientation go) {
+		//Point3D pt = this.getPosition();
+		System.out.println("\t"+position+"\t"+renderoffset );
+		Point3D pt = new Point3D (position.getX()+renderoffset.getX(),
+				position.getY()+renderoffset.getY(),
+				position.getZ()+renderoffset.getZ()
+				); 
+		PixelPoint2D p2d = mapAPointTotheForestPixelWorld(base_graphborder, pt,go);
+		
+		this.drawNodeShape(graphics, p2d);
+		this.drawNodeLabel(graphics, p2d);
 	}
 	public void drawNodeShape(Graphics graphics,PixelPoint2D p2d) {
 		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
@@ -766,7 +877,9 @@ public class Node   {
 			tmpstack = stack;
 			stack = stackref;			
 		}
+		updateGraphborder ();
 	}
+
 	public void BFSprint() {
 		Map<Long, Node> stack = new LinkedHashMap<Long, Node> ();
 		System.out.println(this.getId());

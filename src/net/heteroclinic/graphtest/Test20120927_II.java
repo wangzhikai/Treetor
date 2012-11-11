@@ -29,7 +29,7 @@ public class Test20120927_II extends Test {
 		Bag.testunitname = "CONSTR-OREINT";
 		Bag.testresultfiletype = ".png";
 
-		int nodeslimit =getPower(  2,12);
+		int nodeslimit =getPower(  2,5);
 		Node n = new Node();
 		Random rand = new Random(Calendar.getInstance().getTimeInMillis()
 				% 111335);
@@ -87,6 +87,18 @@ public class Test20120927_II extends Test {
 		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
 				GraphOrientation.LefttoRight);
 		System.out.println("Picture drawn.");
+		
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.RighttoLeft);
+		System.out.println("Picture drawn.");
+
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.ToptoBottom);
+		System.out.println("Picture drawn.");
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.BottomtoTop);
+		System.out.println("Picture drawn.");
+
 		//Node.allnodes.get(1l).BFSprint();
 	}
 

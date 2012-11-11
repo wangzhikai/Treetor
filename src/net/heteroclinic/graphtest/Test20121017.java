@@ -93,63 +93,63 @@ public class Test20121017 extends Test{
 		
 		Node.addNodeSubnodePair(1,9);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder,GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder,GraphOrientation.LefttoRight);
 
 		
 		
 		Node.addNodeSubnodePair(1,10);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(), base_graphborder,GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(), base_graphborder,GraphOrientation.LefttoRight);
 
 
 		
 		Node.addNodeSubnodePair(1,11);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 
 		Node.addNodeSubnodePair(1,12);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 
 		
 		Node.addNodeSubnodePair(9,2);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 
 		Node.addNodeSubnodePair(9,3);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 
 		Node.addNodeSubnodePair(10,4);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 		
 		Node.addNodeSubnodePair(11,5);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 		Node.addNodeSubnodePair(11,6);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 		
 		Node.addNodeSubnodePair(5,13);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 		
 		Node.addNodeSubnodePair(13,7);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 
 		Node.addNodeSubnodePair(13,8);
 		Node.allnodes.get(1l).BFSGraphConstruction();
-		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
+		Node.allnodes.get(1l).image2dRenderWithoutUpdateBorder(Test.getAResultFilename(),base_graphborder, GraphOrientation.LefttoRight);
 	}
 
 }

@@ -24,5 +24,9 @@ public class GraphBorder extends Tier {
 		super(level);
 
 	}
+	public void print() {
+		System.out.println("h/w:"+ getHeight() + ", " + getWidth());
+		System.out.println("x/y/z:" +  xmin+","+ xmax+ "," + ymin+ ","+  ymax+ ","+ zmin + ","+ zmax);
+	}
 
 }
