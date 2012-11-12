@@ -199,6 +199,32 @@ public class Node   {
 	}
 	static public int removeNodeLeafSubnodePair(long parentnodeid,
 			long childnodeid) {
+//		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
+//		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
+//		Node parent = Node.allnodes.get(parentnodeid);
+//		if (parent == null)
+//			return -1;
+//		Node child = Node.allnodes.get(childnodeid);
+//		if (child.getParentnode() == null)
+//			return -4;
+//		//parent.addAChild(child);
+//		//child.setParentnode(parent);
+//		if (child.getSubnodes().size()  > 0) {
+//			return -3; // you can not remove non-leaf node with this function
+//		
+//		}
+//		Node.allnodes.remove(child.getId());
+//		parent.getSubnodes().remove(child.getId());
+//		child.setParentnode(null);
+//		Node.allnodes.remove(child);
+		return removeNodeLeafSubnodePair(parentnodeid,
+				childnodeid, false);
+		//return 1;
+	}
+	
+
+	static public int removeNodeLeafSubnodePair(long parentnodeid,
+			long childnodeid, boolean keepchild) {
 		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
 		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
 		Node parent = Node.allnodes.get(parentnodeid);
@@ -213,15 +239,15 @@ public class Node   {
 			return -3; // you can not remove non-leaf node with this function
 		
 		}
-		Node.allnodes.remove(child.getId());
+		if (! keepchild)
+			Node.allnodes.remove(child.getId());
 		parent.getSubnodes().remove(child.getId());
 		child.setParentnode(null);
-		Node.allnodes.remove(child);
+		//Node.allnodes.remove(child);
+		
 		
 		return 1;
 	}
-	
-
 //	public GraphBorder getGraphborder() {
 //		return graphborder;
 //	}
