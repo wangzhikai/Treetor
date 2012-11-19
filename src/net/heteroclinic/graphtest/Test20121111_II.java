@@ -59,13 +59,13 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		
 		ForestMinistry.addAVirtaulEdge(1l, 5l);
 		ForestMinistry.setNodeSubnodePair(5l, 1l);
-		ForestMinistry.removeAVirtualEdge(5l);
+		ForestMinistry.removeAVirtualEdge(1l, 5l);
 //		
 //
 		ForestMinistry.addAVirtaulEdge(2l, 3l);
 		ForestMinistry.removeNodeSubnodePair(2l, 5l,3);
 		
-		ForestMinistry.removeAVirtualEdge(3l);
+		ForestMinistry.removeAVirtualEdge(2l, 3l);
 		
 		ForestMinistry.removeNodeSubnodePair(5l, 1l,1);
 		ForestMinistry.setNodeSubnodePair(1l, 5l);
@@ -73,7 +73,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		ForestMinistry.addAVirtaulEdge(2l, 5l);
 		
 		ForestMinistry.setNodeSubnodePair(5l, 2l);
-		ForestMinistry.removeAVirtualEdge(5l);
+		ForestMinistry.removeAVirtualEdge(2l, 5l);
 		
 		
 		ForestMinistry.addAVirtaulEdge(1l, 6l);
@@ -82,7 +82,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		ForestMinistry.removeNodeSubnodePair(5l, 2l,1);
 		ForestMinistry.setNodeSubnodePair(2l, 5l);
 
-		ForestMinistry.removeAVirtualEdge(6l);
+		ForestMinistry.removeAVirtualEdge(1l, 6l);
 		
 
 		ForestMinistry.addAVirtaulEdge(1l, 5l);
@@ -132,7 +132,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 
 		
 		ForestMinistry.setNodeSubnodePair(5l, 1l);
-		ForestMinistry.removeAVirtualEdge(5l);
+		ForestMinistry.removeAVirtualEdge(1l, 5l);
 
 		ForestMinistry.constructForest(base_graphborder);
 		ForestMinistry.forest2drender(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
@@ -147,7 +147,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 
 		
 		ForestMinistry.removeNodeSubnodePair(2l, 5l,3);
-		ForestMinistry.removeAVirtualEdge(3l);
+		ForestMinistry.removeAVirtualEdge(2l, 3l);
 		ForestMinistry.removeNodeSubnodePair(5l, 1l,1);
 		ForestMinistry.setNodeSubnodePair(1l, 5l);
 		
@@ -164,7 +164,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 
 		
 		ForestMinistry.setNodeSubnodePair(5l, 2l);
-		ForestMinistry.removeAVirtualEdge(5l);
+		ForestMinistry.removeAVirtualEdge(2l, 5l);
 		
 		ForestMinistry.constructForest(base_graphborder);
 		ForestMinistry.forest2drender(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
@@ -181,7 +181,7 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		ForestMinistry.removeNodeSubnodePair(1l, 5l,3);
 		ForestMinistry.removeNodeSubnodePair(5l, 2l,1);
 		ForestMinistry.setNodeSubnodePair(2l, 5l);
-		ForestMinistry.removeAVirtualEdge(6l);
+		ForestMinistry.removeAVirtualEdge(1l, 6l);
 		
 		ForestMinistry.constructForest(base_graphborder);
 		ForestMinistry.forest2drender(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);

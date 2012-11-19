@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 //import javax.swing.*;
@@ -24,17 +25,23 @@ import javax.imageio.ImageIO;
 public class ForestMinistry {
 	static public final Color VITUALEDGECOLOR = new Color(111,111,111);
 	static public final Stroke VITUALEDGESTROKE = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-	static protected Map<Long, VirtualEdge> virtualedges = new HashMap<Long, VirtualEdge>();
+	//static protected Map<Long, VirtualEdge> virtualedges = new HashMap<Long, VirtualEdge>();
+	static protected LinkedHashSet<VirtualEdge> virtualedges = new LinkedHashSet<VirtualEdge>();
 	static protected Map<Long, Node> hangingnodes = new HashMap<Long, Node>();
 	public static void addAVirtaulEdge (long fromid, long toid ) {
 		Node nfrom = Node.allnodes.get(fromid);
 		Node nto = Node.allnodes.get(toid);
 		VirtualEdge ve = new VirtualEdge (nfrom, nto, nto.getId());
-		System.out.println("  "+ ve.getId()+ "\t" +ve);
-		virtualedges.put(ve.getId(), ve);
+		//System.out.println("  "+ ve.getId()+ "\t" +ve);
+		//virtualedges.put(ve.getId(), ve);
+		virtualedges.add(ve);
+		
 	}
-	public static void removeAVirtualEdge (long vid) {
-		virtualedges.remove(vid);
+	public static void removeAVirtualEdge (long fromid, long toid) {
+		Node nfrom = Node.allnodes.get(fromid);
+		Node nto = Node.allnodes.get(toid);
+		VirtualEdge ve = new VirtualEdge (nfrom, nto, nto.getId());
+		virtualedges.remove(ve);
 	}
 	
 	
@@ -195,7 +202,9 @@ public class ForestMinistry {
 		
 		it = trees_under_direct_administration.keySet().iterator();
 		
-		double h_remain =ttl_h;
+		//double h_remain =ttl_h;
+		double h_remain =gb.getHeight();
+		h_remain -= Bag.boderspace;
 		while (it.hasNext()) {
 			Long l = it.next();
 			Node r = trees_under_direct_administration.get(l);
@@ -208,7 +217,7 @@ public class ForestMinistry {
 				offsety += Bag.treeinteveralinforest;
 			}
 			double offsetz = r.getPosition().getZ();
-			//r.setRenderoffset(offsetx, offsety, offsetz);
+			r.setRenderoffset(offsetx, offsety, offsetz);
 			Map<Long, Node> nodestorender = r.getNodestorender();
 			
 			Iterator<Long> it2 = nodestorender.keySet().iterator();
@@ -236,7 +245,8 @@ public class ForestMinistry {
 		}
 		it = trees_under_direct_administration.keySet().iterator();
 		double ttl_w = 0.0d;
-		double ttl_h = 0.0d;
+		//double ttl_h = 0.0d;
+		double ttl_h = Bag.boderspace;
 		while (it.hasNext()) {
 			Long l = it.next();
 			Node r = trees_under_direct_administration.get(l);
@@ -248,12 +258,15 @@ public class ForestMinistry {
 				ttl_h += Bag.treeinteveralinforest;
 			}
 		}
+		ttl_w += Bag.boderspace;
 		gb.setWidth(ttl_w);
+		ttl_h += Bag.boderspace;
 		gb.setHeight(ttl_h);
 		
 		it = trees_under_direct_administration.keySet().iterator();
 		
 		double h_remain =ttl_h;
+		h_remain -= Bag.boderspace;
 		while (it.hasNext()) {
 			Long l = it.next();
 			Node r = trees_under_direct_administration.get(l);
@@ -330,10 +343,13 @@ public class ForestMinistry {
 		
 		//RENDER VIRTUAL EDGES 
 		
-		Iterator<Long> vit = virtualedges.keySet().iterator();
+		//Iterator<Long> vit = virtualedges.keySet().iterator();
+		Iterator<VirtualEdge> vit = virtualedges.iterator();
 		while (vit.hasNext()) {
+//			ForestMinistry.drawAVirtualEdge(graphics,
+//					virtualedges.get(vit.next()), base_graphborder, go);
 			ForestMinistry.drawAVirtualEdge(graphics,
-					virtualedges.get(vit.next()), base_graphborder, go);
+					vit.next(), base_graphborder, go);
 		}
 		
 		
