@@ -28,7 +28,12 @@ public class TNode extends Node {
 		drawAlignedString (graphics,p2d,"T"+tnodeid);
 	}
 
-	
+	public TNode(long tnodeid) {
+		// TODO Auto-generated constructor stub
+		//tnodeid = tnodecount.incrementAndGet();
+		this.tnodeid = tnodeid;
+		setFillcolor(0,255,0 );
+	}
 
 	public TNode() {
 		// TODO Auto-generated constructor stub

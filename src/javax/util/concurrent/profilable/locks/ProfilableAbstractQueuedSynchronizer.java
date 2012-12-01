@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.AbstractOwnableSynchronizer;
 //import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.LockSupport;
+//import java.util.concurrent.locks.LockSupport;
 
 import sun.misc.Unsafe;
 //Access restriction: The type Unsafe is not accessible due to restriction on required library 
@@ -684,7 +684,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     s = t;
         }
         if (s != null)
-            LockSupport.unpark(s.thread);
+            ProfilableLockSupport.unpark(s.thread);
     }
 
     /**
@@ -856,7 +856,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
      * @return {@code true} if interrupted
      */
     private final boolean parkAndCheckInterrupt() {
-        LockSupport.park(this);
+        ProfilableLockSupport.park(this);
         return Thread.interrupted();
     }
 
@@ -951,7 +951,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     return false;
                 if (shouldParkAfterFailedAcquire(p, node) &&
                     nanosTimeout > spinForTimeoutThreshold)
-                    LockSupport.parkNanos(this, nanosTimeout);
+                    ProfilableLockSupport.parkNanos(this, nanosTimeout);
                 long now = System.nanoTime();
                 nanosTimeout -= now - lastTime;
                 lastTime = now;
@@ -1055,7 +1055,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     return false;
                 if (shouldParkAfterFailedAcquire(p, node) &&
                     nanosTimeout > spinForTimeoutThreshold)
-                    LockSupport.parkNanos(this, nanosTimeout);
+                    ProfilableLockSupport.parkNanos(this, nanosTimeout);
                 long now = System.nanoTime();
                 nanosTimeout -= now - lastTime;
                 lastTime = now;
@@ -1707,7 +1707,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
         Node p = enq(node);
         int ws = p.waitStatus;
         if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
-            LockSupport.unpark(node.thread);
+            ProfilableLockSupport.unpark(node.thread);
         return true;
     }
 
@@ -2001,7 +2001,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
             int savedState = fullyRelease(node);
             boolean interrupted = false;
             while (!isOnSyncQueue(node)) {
-                LockSupport.park(this);
+                ProfilableLockSupport.park(this);
                 if (Thread.interrupted())
                     interrupted = true;
             }
@@ -2065,7 +2065,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
             int savedState = fullyRelease(node);
             int interruptMode = 0;
             while (!isOnSyncQueue(node)) {
-                LockSupport.park(this);
+                ProfilableLockSupport.park(this);
                 if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
                     break;
             }
@@ -2104,7 +2104,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     transferAfterCancelledWait(node);
                     break;
                 }
-                LockSupport.parkNanos(this, nanosTimeout);
+                ProfilableLockSupport.parkNanos(this, nanosTimeout);
                 if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
                     break;
 
@@ -2152,7 +2152,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     timedout = transferAfterCancelledWait(node);
                     break;
                 }
-                LockSupport.parkUntil(this, abstime);
+                ProfilableLockSupport.parkUntil(this, abstime);
                 if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
                     break;
             }
@@ -2198,7 +2198,7 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                     break;
                 }
                 if (nanosTimeout >= spinForTimeoutThreshold)
-                    LockSupport.parkNanos(this, nanosTimeout);
+                    ProfilableLockSupport.parkNanos(this, nanosTimeout);
                 if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
                     break;
                 long now = System.nanoTime();

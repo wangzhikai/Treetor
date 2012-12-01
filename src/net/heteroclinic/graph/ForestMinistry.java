@@ -110,6 +110,27 @@ public class ForestMinistry {
 		trees_under_direct_administration.put(r.getId(), r);
 		return r;
 	}
+	static public boolean createATNode (long tid) {
+//		Node r = null;
+//		switch (nt) {
+//		case TNODE:
+//			r = new TNode();
+//			break;
+//		case RNODE:
+//			r = new RNode();
+//			break;
+//		default:
+//			r = new Node();
+//			;
+//		}
+		if (Node.allnodes.containsKey(tid) )
+			return false;
+		else {
+			TNode tn	 = new TNode(tid);
+			trees_under_direct_administration.put(tn.getId(), tn);
+			return true;
+		}
+	}
 	static public Node createANode (Nodetype nt,long pid) {
 		Node r = null;
 		switch (nt) {
