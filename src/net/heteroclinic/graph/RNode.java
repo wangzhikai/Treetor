@@ -32,6 +32,19 @@ public class RNode extends Node {
 		setFillcolor(255, 110, 110);
 	}
 
+	public RNode(long rnodeid) {
+		// TODO Auto-generated constructor stub
+		//rnodeid = rnodecount.incrementAndGet();
+		this.rnodeid = rnodeid ;
+		setFillcolor(255, 110, 110);
+	}
+	public RNode(long nid, long rnodeid) {
+		// TODO Auto-generated constructor stub
+		//rnodeid = rnodecount.incrementAndGet();
+		super(nid);
+		this.rnodeid = rnodeid ;
+		setFillcolor(255, 110, 110);
+	}
 //	public RNode(String label) {
 //		super(label);
 //		// TODO Auto-generated constructor stub

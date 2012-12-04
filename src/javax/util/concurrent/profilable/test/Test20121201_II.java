@@ -9,30 +9,53 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.util.concurrent.profilable.ProfilableRunnable;
+import javax.util.concurrent.profilable.locks.ProfilableReentrantLock;
 import javax.util.concurrent.profilable.messenger.FunctorType;
 import javax.util.concurrent.profilable.messenger.GraphMessenger;
 
 import net.heteroclinic.graph.Bag;
 
-class Testrun extends ProfilableRunnable{
+class Testrun_II extends ProfilableRunnable{
 
-	public Testrun(CountDownLatch startsignal) {
+	public Testrun_II(CountDownLatch startsignal) {
 		super(startsignal);
 	}
 
 	@Override
 	public void subContract()  {
 		try {
-			TimeUnit.MILLISECONDS.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			Test20121201_II.locks[0].lock();
+			Test20121201_II.locks[1].lock();
+			Test20121201_II.locks[2].lock();
+			try {
+				TimeUnit.MILLISECONDS.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+//		catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+		finally {
+			Test20121201_II.locks[0].unlock();
+			Test20121201_II.locks[1].unlock();
+			Test20121201_II.locks[2].unlock();
 		}
 	}
 	
 }
 
-public class Test20121201 {
+public class Test20121201_II {
+	public static ProfilableReentrantLock [] locks =
+			new ProfilableReentrantLock [10];
+	static {
+		for (int i = 0; i<locks.length; i++) {
+			locks[i]  = new ProfilableReentrantLock();
+		}
+	}
 
 	/**
 	 * @param args
@@ -52,7 +75,7 @@ public class Test20121201 {
 		Bag.edgetrim = 1.5d; // ratio
 		
 		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
-		Bag.testunitname = "PROFLB";
+		Bag.testunitname = "PFLB_JUST_LOCK_UNLOCK";
 		Bag.testresultfiletype = ".png";
 		
 
@@ -68,7 +91,7 @@ public class Test20121201 {
 		
 		fl.add(exec.submit(new GraphMessenger(startSignal)));
 	
-		fl.add(exec.submit(new Testrun( startSignal)));
+		fl.add(exec.submit(new Testrun_II( startSignal)));
 
 
 		TimeUnit.MILLISECONDS.sleep(10000000);

@@ -34,7 +34,13 @@ public class TNode extends Node {
 		this.tnodeid = tnodeid;
 		setFillcolor(0,255,0 );
 	}
-
+	public TNode(long nid,long tnodeid) {
+		// TODO Auto-generated constructor stub
+		//tnodeid = tnodecount.incrementAndGet();
+		super(nid);
+		this.tnodeid = tnodeid;
+		setFillcolor(0,255,0 );
+	}
 	public TNode() {
 		// TODO Auto-generated constructor stub
 		tnodeid = tnodecount.incrementAndGet();

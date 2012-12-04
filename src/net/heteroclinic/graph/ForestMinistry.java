@@ -110,6 +110,60 @@ public class ForestMinistry {
 		trees_under_direct_administration.put(r.getId(), r);
 		return r;
 	}
+	//optor = 1, child starting a new tree, 0 remove, else hanging 
+	public static int removeNodeSubnodePairforProfilable(long parentnodeid, long childnodeid, long optor) {
+		// TODO Auto-generated method stub
+		//int r = Node.removeNodeLeafSubnodePair(parentnodeid, childnodeid);
+		//int r = Node.removeNodeLeafSubnodePair(l, m,b);
+		Node parent = Node.allnodes.get(parentnodeid);
+		if (parent == null)
+			return -1;
+		Node child = Node.allnodes.get(childnodeid);
+		if (child.getParentnode() == null)
+			return -4;
+////		//parent.addAChild(child);
+////		//child.setParentnode(parent);
+//		if (child.getSubnodes().size()  > 0) {
+//			//return -3; // you can not remove non-leaf node with this function
+//			hangingnodes.remove(child.getId());
+//		
+//		} else {
+//			if (! keepchild)
+//				Node.allnodes.remove(child.getId());
+//		}
+		parent.getSubnodes().remove(child.getId());
+		child.setParentnode(null);
+		if (optor == 1) {
+			trees_under_direct_administration.put(child.getId(),child);
+			hangingnodes.remove(child.getId());
+		} else if (optor == 0) {
+			Node.allnodes.remove(child.getId());
+			hangingnodes.remove(child.getId());
+		} else {
+			hangingnodes.put(child.getId(),child);
+		}
+		//Node.allnodes.remove(child);
+		return 1;
+	}
+	static public boolean createATNodeforProfilable (long nid, long tid) {
+		if (Node.allnodes.containsKey(nid) )
+			return false;
+		else {
+			TNode tn	 = new TNode(nid, tid);
+			trees_under_direct_administration.put(tn.getId(), tn);
+			return true;
+		}
+	}
+	static public boolean createARNodeforProfilable (long nid,long rid) {
+
+		if (Node.allnodes.containsKey(nid) )
+			return false;
+		else {
+			RNode r	 = new RNode(nid,rid);
+			hangingnodes.put(r.getId(), r);
+			return true;
+		}
+	}
 	static public boolean createATNode (long tid) {
 //		Node r = null;
 //		switch (nt) {
@@ -128,6 +182,16 @@ public class ForestMinistry {
 		else {
 			TNode tn	 = new TNode(tid);
 			trees_under_direct_administration.put(tn.getId(), tn);
+			return true;
+		}
+	}
+	static public boolean createARNode (long rid) {
+
+		if (Node.allnodes.containsKey(rid) )
+			return false;
+		else {
+			RNode r	 = new RNode(rid);
+			hangingnodes.put(r.getId(), r);
 			return true;
 		}
 	}
@@ -309,9 +373,9 @@ public class ForestMinistry {
 				Node r2 = nodestorender.get(l2);
 				r2.setRenderoffset(offsetx, offsety, offsetz);
 			}
-			System.out.println(r.getId() +" id : w h " + r.getGraphborder().getWidth() + " "
-			+r.getGraphborder().getHeight());
-			System.out.println("h_remain "+h_remain);
+//			System.out.println(r.getId() +" id : w h " + r.getGraphborder().getWidth() + " "
+//			+r.getGraphborder().getHeight());
+//			System.out.println("h_remain "+h_remain);
 			h_remain-= r.getGraphborder().getHeight();
 			if (it .hasNext()) {
 				h_remain -= Bag.treeinteveralinforest;
@@ -327,10 +391,10 @@ public class ForestMinistry {
 		
 		//int width=512;
 		//int height=512;
-		base_graphborder.print();
+		//base_graphborder.print();
 		int img_w = Node.calculateImageWidth (base_graphborder, go);
 		int img_h = Node.calculateImageHeight (base_graphborder, go);
-		System.out.println("img_w:"+img_w+"\t"+ "img_h:"+img_h);
+		//System.out.println("img_w:"+img_w+"\t"+ "img_h:"+img_h);
 
 		//String mcap = "testcapcha";
 		//Color background = new Color(204,204,204);

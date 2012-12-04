@@ -26,10 +26,10 @@ public class Test20121123 {
 		ProfilableReentrantLock lock2 = new ProfilableReentrantLock();
 		List<Future<?>> fl = new ArrayList<Future<?>>();
 		ExecutorService exec = Executors.newCachedThreadPool();
-		fl.add(exec.submit(new ProfilableRuntype1(lock1, lock2)));
-		fl.add(exec.submit(new ProfilableRuntype2(lock1, lock2)));
+		fl.add(exec.submit(new ProfilableRuntype1(lock1, lock2,500)));
+		fl.add(exec.submit(new ProfilableRuntype2(lock1, lock2,1000000)));
 
-		TimeUnit.MILLISECONDS.sleep(10000);
+		TimeUnit.MILLISECONDS.sleep(10000000);
 
 		exec.shutdown();
 		for (Future<?> f : fl)

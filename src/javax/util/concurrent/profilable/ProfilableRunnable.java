@@ -7,10 +7,16 @@ import javax.util.concurrent.profilable.messenger.FunctorType;
 import javax.util.concurrent.profilable.messenger.GraphMessenger;
 import javax.util.concurrent.profilable.messenger.MessageForGraph;
 
-public abstract class ProfilableRunnable implements Runnable  {
+public abstract class ProfilableRunnable implements Runnable,Profilable  {
+	protected final long profiableId ;
+	public long getProfiableId() {
+		return profiableId;
+	}
+	
 	protected CountDownLatch startsignal;
 	public ProfilableRunnable (CountDownLatch startsignal) {
 		this.startsignal = startsignal;
+		profiableId = net.heteroclinic.graph.Node.counter.incrementAndGet();
 	}
 	protected volatile boolean halted = false;
 
@@ -26,8 +32,10 @@ public abstract class ProfilableRunnable implements Runnable  {
 
 	public void run() {
 		try {
+			ThreadIdProfilableIdMap.putAnEntry(Thread.currentThread().getId(), this.getProfiableId());
 			GraphMessenger.messageque.put(
-					new MessageForGraph(FunctorType.createATNode, Thread.currentThread().getId()));
+					new MessageForGraph(FunctorType.createATNodeforProfilable, this.getProfiableId(),Thread.currentThread().getId()));
+
 			startsignal.await();
 			subContract ();
 //			while (!Thread.interrupted() && !halted) {

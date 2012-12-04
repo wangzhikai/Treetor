@@ -2,8 +2,13 @@ package javax.util.concurrent.profilable.messenger;
 
 
 public enum FunctorType {
-	createATNode(1),
+	removeNodeSubnodePairforProfilable(3),
+	createATNodeforProfilable(2),
+	createARNodeforProfilable(2),
+	//createARNode (1),
+	//createATNode(1),
 	createADanglingRNode(1),
+	setNodeSubnodePair(2),
     ARGTHREE(3),
     ARGTWO(2),
     ARGONE(1);

@@ -48,7 +48,7 @@ public class Node   {
 		this.renderoffset = renderoffset;
 	}
 	static public Map<Long, Node> allnodes = new ConcurrentHashMap<Long, Node>();
-	static protected AtomicLong counter = new AtomicLong(0L);
+	static public AtomicLong counter = new AtomicLong(0L);
 
 	
 	protected GraphBorder graphborder = new GraphBorder(-1);
@@ -260,7 +260,7 @@ public class Node   {
 		Iterator<Long> it = nodestorender.keySet().iterator();
 		while (it.hasNext()) {
 			Node tn = nodestorender.get(it.next());
-			System.out.print("id:"+ tn.getId() + " in renderAsMemberoftheForest().");
+			//System.out.print("id:"+ tn.getId() + " in renderAsMemberoftheForest().");
 			tn.nodeinforest2drender( base_graphborder,graphics, go);
 		}
 		it = edgestorender.keySet().iterator();
@@ -340,7 +340,7 @@ public class Node   {
 	}
 	public void nodeinforest2drender ( GraphBorder base_graphborder,Graphics graphics,GraphOrientation go) {
 		//Point3D pt = this.getPosition();
-		System.out.println("\t"+position+"\t"+renderoffset );
+		//System.out.println("\t"+position+"\t"+renderoffset );
 		Point3D pt = new Point3D (position.getX()+renderoffset.getX(),
 				position.getY()+renderoffset.getY(),
 				position.getZ()+renderoffset.getZ()
@@ -490,10 +490,18 @@ public class Node   {
 		return label;
 	}
 	public Node() {
+		//Node(counter.incrementAndGet());
 		id = counter.incrementAndGet();
 		label = ""+id;
 		allnodes.put(this.getId(), this);
 	}
+	public Node(long id) {
+		this.id = id;
+		label = ""+id;
+		allnodes.put(this.getId(), this);
+	}
+
+	//TODO
 	public long getId() {
 		return id;
 	}

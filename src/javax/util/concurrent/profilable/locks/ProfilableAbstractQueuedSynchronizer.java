@@ -53,6 +53,8 @@ import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.AbstractOwnableSynchronizer;
 //import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
+
+import javax.util.concurrent.profilable.Profilable;
 //import java.util.concurrent.locks.LockSupport;
 
 import sun.misc.Unsafe;
@@ -313,15 +315,21 @@ import sun.misc.Unsafe;
 @SuppressWarnings("unused")
 public abstract class ProfilableAbstractQueuedSynchronizer
     extends AbstractOwnableSynchronizer
-    implements java.io.Serializable {
-
-    private static final long serialVersionUID = 7373984972572414691L;
+    implements java.io.Serializable, Profilable {
+	protected final long profiableId ;
+	public long getProfiableId() {
+		return profiableId;
+	}
+ 
+	private static final long serialVersionUID = 7373984972572414691L;
 
     /**
      * Creates a new <tt>AbstractQueuedSynchronizer</tt> instance
      * with initial synchronization state of zero.
      */
-    protected ProfilableAbstractQueuedSynchronizer() { }
+    protected ProfilableAbstractQueuedSynchronizer(long profiableId) {
+    	this.profiableId = profiableId;
+    }
 
     /**
      * Wait queue node class.

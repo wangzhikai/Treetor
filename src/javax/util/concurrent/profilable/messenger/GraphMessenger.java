@@ -39,10 +39,22 @@ public class GraphMessenger implements Runnable {
 				MessageForGraph msg = messageque.take();
 				// System.out.println("hi");
 				System.out.println("MSG: "+msg);
-
 				switch (msg.eft) {
-				case createATNode:
-					ForestMinistry.createATNode(msg.getVarat(0));
+				case removeNodeSubnodePairforProfilable :
+					ForestMinistry.removeNodeSubnodePairforProfilable(msg.getVarat(0), msg.getVarat(1), msg.getVarat(2));
+					reconstructgraph = true;
+					break;
+				case createARNodeforProfilable :
+					//assert(msg.vargs.length == msg.eft.getLenreq());
+					ForestMinistry.createARNodeforProfilable (msg.getVarat(0),msg.getVarat(1));
+					reconstructgraph = false;
+					break;
+				case setNodeSubnodePair:
+					ForestMinistry.setNodeSubnodePair(msg.getVarat(0), msg.getVarat(1));
+					reconstructgraph = true;
+					break;
+				case createATNodeforProfilable:
+					ForestMinistry.createATNodeforProfilable(msg.getVarat(0), msg.getVarat(1));
 					reconstructgraph = true;
 					break;
 				case ARGTHREE:
