@@ -10,59 +10,71 @@ import java.util.concurrent.TimeUnit;
 
 import javax.util.concurrent.profilable.LockerRoom;
 import javax.util.concurrent.profilable.ProfilableRunnable;
-import javax.util.concurrent.profilable.locks.ProfilableReentrantLock;
-import javax.util.concurrent.profilable.messenger.FunctorType;
 import javax.util.concurrent.profilable.messenger.GraphMessenger;
 
 import net.heteroclinic.graph.Bag;
 import net.heteroclinic.graph.ForestMinistry;
 
-class Testrun_II extends ProfilableRunnable{
 
-	public Testrun_II(CountDownLatch startsignal) {
+class TestBlockUnblock_blockee_complex extends ProfilableRunnable{
+
+	public TestBlockUnblock_blockee_complex(CountDownLatch startsignal) {
 		super(startsignal);
 	}
 
 	@Override
 	public void subContract()  {
 		try {
-			
-			LockerRoom.samplelocks[0].lock();
 			LockerRoom.samplelocks[1].lock();
 			LockerRoom.samplelocks[2].lock();
 			try {
-				TimeUnit.MILLISECONDS.sleep(1000);
+				TimeUnit.MILLISECONDS.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			LockerRoom.samplelocks[0].lock();
+	
 		} 
-//		catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
 		finally {
 			LockerRoom.samplelocks[0].unlock();
 			LockerRoom.samplelocks[1].unlock();
 			LockerRoom.samplelocks[2].unlock();
 		}
 	}
+}
+
+class TestBlockUnblock_blocker_complex extends ProfilableRunnable{
+
+	public TestBlockUnblock_blocker_complex(CountDownLatch startsignal) {
+		super(startsignal);
+	}
+
+	@Override
+	public void subContract()  {
+		try {
+	
+			LockerRoom.samplelocks[3].lock();
+			LockerRoom.samplelocks[4].lock();			
+			LockerRoom.samplelocks[0].lock();
+			try {
+				TimeUnit.MILLISECONDS.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		finally {
+			LockerRoom.samplelocks[0].unlock();
+			LockerRoom.samplelocks[3].unlock();
+			LockerRoom.samplelocks[4].unlock();		
+		}
+	}
 	
 }
 
-public class Test20121201_II {
-//	public static ProfilableReentrantLock [] locks =
-//			new ProfilableReentrantLock [10];
-//	static {
-//		for (int i = 0; i<locks.length; i++) {
-//			locks[i]  = new ProfilableReentrantLock();
-//		}
-//	}
-
-	/**
-	 * @param args
-	 * @throws InterruptedException 
-	 */
+public class Test20121209_BLOKER_BLOKEE_COMLEX {
 	public static void main(String[] args) throws InterruptedException {
 		
 		Bag.tierdistance = 10.0d;
@@ -77,11 +89,12 @@ public class Test20121201_II {
 		Bag.edgetrim = 1.5d; // ratio
 		
 		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
-		Bag.testunitname = "PFLB_JUST_LOCK_UNLOCK";
+		Bag.testunitname = "PROFLB_BLOKER_BLOKEE_COMLEX";
 		Bag.testresultfiletype = ".png";
 		
 
 		Bag.treeinteveralinforest = 1.0d * Bag.nodespace;
+		
 		
 		
 		// first pass set Bag.forestministryusepresetgraphborder false
@@ -90,10 +103,13 @@ public class Test20121201_II {
 		if ( Bag.forestministryusepresetgraphborder ) {
 			Bag.forestministryupdategraphborder = false;
 			
-			ForestMinistry.initGraphBorder(-1,0.0,0.0,0.0,0.0,0.0,0.0,31.375,26.0);
+			ForestMinistry.initGraphBorder(-1,0.0,0.0,0.0,0.0,0.0,0.0,51.375,39.0);
 		} else {
 			Bag.forestministryupdategraphborder = true;
 		}
+		
+		
+		
 		
 		CountDownLatch startSignal = new CountDownLatch(1);
 		
@@ -102,17 +118,18 @@ public class Test20121201_II {
 		
 		fl.add(exec.submit(new GraphMessenger(startSignal)));
 	
-		fl.add(exec.submit(new Testrun_II( startSignal)));
+		fl.add(exec.submit(new TestBlockUnblock_blockee_complex( startSignal)));
+		fl.add(exec.submit(new TestBlockUnblock_blocker_complex( startSignal)));
 
 
-		TimeUnit.MILLISECONDS.sleep(2000);
+		TimeUnit.MILLISECONDS.sleep(10000);
 
 		exec.shutdown();
 		for (Future<?> f : fl)
 			f.cancel(true);
 		
+		
 		ForestMinistry.printStaticGraphBorder();
 
 	}
-
 }

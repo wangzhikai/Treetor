@@ -14,7 +14,7 @@ import javax.util.concurrent.profilable.locks.ProfilableReentrantLock;
 
 import sun.misc.Unsafe;
 
-public class Test20121123 {
+public class Test20121123_DEBUG_LOCK {
 
 	/**
 	 * @param args

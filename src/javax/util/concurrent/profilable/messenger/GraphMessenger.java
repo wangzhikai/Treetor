@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 //import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.heteroclinic.graph.Bag;
 import net.heteroclinic.graph.ForestMinistry;
 import net.heteroclinic.graph.GraphBorder;
 import net.heteroclinic.graph.GraphOrientation;
@@ -49,8 +50,8 @@ public class GraphMessenger implements Runnable {
 					ForestMinistry.createARNodeforProfilable (msg.getVarat(0),msg.getVarat(1));
 					reconstructgraph = false;
 					break;
-				case setNodeSubnodePair:
-					ForestMinistry.setNodeSubnodePair(msg.getVarat(0), msg.getVarat(1));
+				case setNodeSubnodePairforProfilable:
+					ForestMinistry.setNodeSubnodePairforProfilable(msg.getVarat(0), msg.getVarat(1));
 					reconstructgraph = true;
 					break;
 				case createATNodeforProfilable:
@@ -75,7 +76,13 @@ public class GraphMessenger implements Runnable {
 
 				}
 				if (reconstructgraph){
-					GraphBorder base_graphborder = ForestMinistry.constructForest();
+					GraphBorder base_graphborder = null;
+					if ( Bag.forestministryusepresetgraphborder ) {
+						 ForestMinistry.constructForest();
+						base_graphborder =  ForestMinistry.getGraphborder();
+					} else {
+						base_graphborder = ForestMinistry.constructForest();
+					}
 					
 					ForestMinistry.forest2drender(Test.getAResultFilename(),base_graphborder, GraphOrientation.ToptoBottom);
 

@@ -8,7 +8,7 @@ public class Test20121123_selfInterrupt {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		//This method is wrong.
 		System.out.println("pt 1");
 		Thread.currentThread().interrupt();
 		System.out.println("pt 2");

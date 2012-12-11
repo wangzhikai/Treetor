@@ -24,9 +24,70 @@ public class GraphBorder extends Tier {
 		super(level);
 
 	}
+
+	public GraphBorder(GraphBorder ngb) {
+		super(ngb.level);
+		this.xmin = ngb.xmin;
+		this.xmax = ngb.xmax;
+		this.ymin = ngb.ymin;
+		this.ymax = ngb.ymax;
+		this.zmin = ngb.zmin;
+		this.zmax = ngb.zmax;
+
+		this.width = ngb.width;
+		this.height = ngb.height;
+	}
+
+	public void copyValueFrom(GraphBorder ngb) {
+		this.level = ngb.level;
+		this.xmin = ngb.xmin;
+		this.xmax = ngb.xmax;
+		this.ymin = ngb.ymin;
+		this.ymax = ngb.ymax;
+		this.zmin = ngb.zmin;
+		this.zmax = ngb.zmax;
+
+		this.width = ngb.width;
+		this.height = ngb.height;
+	}
+
+	public GraphBorder(long level, double xmin, double ymin, double zmin,
+			double xmax, double zmax, double ymax, double width, double height) {
+		super(level);
+		this.xmin = xmin;
+		this.xmax = xmax;
+		this.ymin = ymin;
+		this.ymax = ymax;
+		this.zmin = zmin;
+		this.zmax = zmax;
+
+		this.width = width;
+		this.height = height;
+	}
+
+	public void setValues(long level, double xmin, double ymin, double zmin,
+			double xmax, double zmax, double ymax, double width, double height) {
+		this.level = level;
+		this.xmin = xmin;
+		this.xmax = xmax;
+		this.ymin = ymin;
+		this.ymax = ymax;
+		this.zmin = zmin;
+		this.zmax = zmax;
+
+		this.width = width;
+		this.height = height;
+	}
+
 	public void print() {
-		System.out.println("h/w:"+ getHeight() + ", " + getWidth());
-		System.out.println("x/y/z:" +  xmin+","+ xmax+ "," + ymin+ ","+  ymax+ ","+ zmin + ","+ zmax);
+		System.out.println("h/w:" + getHeight() + ", " + getWidth());
+		System.out.println("x/y/z:" + xmin + "," + xmax + "," + ymin + ","
+				+ ymax + "," + zmin + "," + zmax);
+		System.out.println("Constructor:");
+		System.out.println("new GraphBorder(" + level + "," + xmin + "," + ymin
+				+ "," + zmin + "," + xmax + "," + ymax + "," + zmax + ","
+				+ width + "," + height + ");");
+
 	}
 
 }

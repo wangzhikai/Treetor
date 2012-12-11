@@ -8,7 +8,8 @@ public enum FunctorType {
 	//createARNode (1),
 	//createATNode(1),
 	createADanglingRNode(1),
-	setNodeSubnodePair(2),
+	setNodeSubnodePairforProfilable(2),
+	//setNodeSubnodePair(2),
     ARGTHREE(3),
     ARGTWO(2),
     ARGONE(1);

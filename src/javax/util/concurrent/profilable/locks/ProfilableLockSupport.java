@@ -46,6 +46,12 @@ package javax.util.concurrent.profilable.locks;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.*;
+
+import javax.util.concurrent.profilable.ThreadIdProfilableIdMap;
+import javax.util.concurrent.profilable.messenger.FunctorType;
+import javax.util.concurrent.profilable.messenger.GraphMessenger;
+import javax.util.concurrent.profilable.messenger.MessageForGraph;
+
 import sun.misc.Unsafe;
 
 
@@ -203,7 +209,22 @@ public class ProfilableLockSupport {
     public static void park(Object blocker) {
         Thread t = Thread.currentThread();
         setBlocker(t, blocker);
+        //TODO set block message cast blocker to  ProfilableAbstractQueuedSynchronizer
+        if (blocker instanceof ProfilableAbstractQueuedSynchronizer) {
+   			try {
+				GraphMessenger.messageque.put(
+						new MessageForGraph(FunctorType.setNodeSubnodePairforProfilable, 
+								((ProfilableAbstractQueuedSynchronizer) blocker).getProfiableId(),
+								ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() )));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+        	
+        }
         unsafe.park(false, 0L);
+
+        //unblocked
         setBlocker(t, null);
     }
 

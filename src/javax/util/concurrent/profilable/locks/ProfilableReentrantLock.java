@@ -150,8 +150,9 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
      * represent the number of holds on the lock.
      */
     abstract static class Sync extends ProfilableAbstractQueuedSynchronizer {
-        protected Sync(long profiableId) {
-			super(profiableId);
+        protected Sync(long lockId, long profiableId) {
+        	
+			super(lockId,profiableId);
 
 		}
 
@@ -175,6 +176,17 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
             if (c == 0) {
                 if (compareAndSetState(0, acquires)) {
                     setExclusiveOwnerThread(current);
+                    //TODO add message here
+        			try {
+						GraphMessenger.messageque.put(
+								new MessageForGraph(FunctorType.setNodeSubnodePairforProfilable, 
+										
+										ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() ), this.getProfiableId()));
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
                     return true;
                 }
             }
@@ -196,6 +208,17 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
             if (c == 0) {
                 free = true;
                 setExclusiveOwnerThread(null);
+                //TODO set dangling R
+	   			try {
+					GraphMessenger.messageque.put(
+							new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable, 
+									
+									ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() ), this.getProfiableId(),2));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+ 
             }
             setState(c);
             return free;
@@ -241,9 +264,11 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
      */
     static final class NonfairSync extends Sync {
         private static final long serialVersionUID = 7316153563782823691L;
-        public NonfairSync(long profiableId) {
-        	super(profiableId);
-        }
+        public NonfairSync(long lockId, long profiableId) {
+        	
+			super(lockId,profiableId);
+
+		}
 
         /**
          * Performs lock.  Try immediate barge, backing up to normal
@@ -253,9 +278,8 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
         final void lock() throws InterruptedException {
             if (compareAndSetState(0, 1)) {
                 setExclusiveOwnerThread(Thread.currentThread());
-                //TODO
     			GraphMessenger.messageque.put(
-    					new MessageForGraph(FunctorType.setNodeSubnodePair, 
+    					new MessageForGraph(FunctorType.setNodeSubnodePairforProfilable, 
     							
     							ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() ), this.getProfiableId()));
             }
@@ -272,8 +296,10 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
      * Sync object for fair locks
      */
     static final class FairSync extends Sync {
-        protected FairSync(long lockid) {
-			super(lockid);
+        protected FairSync(long lockId, long profiableId) {
+        	
+			super(lockId,profiableId);
+
 		}
 
 		private static final long serialVersionUID = -3000897897090466540L;
@@ -316,7 +342,7 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
 		profiableId = net.heteroclinic.graph.Node.counter.incrementAndGet();
 
         //sync = new NonfairSync();
-		sync = new NonfairSync(lockId );
+		sync = new NonfairSync(lockId, profiableId);
 		try {
 			GraphMessenger.messageque.put(
 					new MessageForGraph(FunctorType.createARNodeforProfilable,
@@ -339,7 +365,7 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
 		profiableId = net.heteroclinic.graph.Node.counter.incrementAndGet();
 
 
-        sync = fair ? new FairSync(lockId) : new NonfairSync(lockId);
+        sync = fair ? new FairSync(lockId,profiableId) : new NonfairSync(lockId,profiableId);
 		try {
 			GraphMessenger.messageque.put(
 					new MessageForGraph(FunctorType.createARNodeforProfilable,
@@ -543,22 +569,24 @@ public class ProfilableReentrantLock implements Lock,Profilable, java.io.Seriali
      */
     public void unlock() {
         if (sync.release(1) ) {
-			try {
-//				GraphMessenger.messageque.put(
-//						//todo
-//						new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable,
-//								this.getProfiableId(),lockId ));
-//				//optor = 1, child starting a new tree, 0 remove, else hanging 
-//				public static int removeNodeSubnodePairforProfilable(long parentnodeid, long childnodeid, long optor) 
-	   			GraphMessenger.messageque.put(
-    					new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable, 
-    							
-    							ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() ), this.getProfiableId(),2));
- 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+////				GraphMessenger.messageque.put(
+////						//todo
+////						new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable,
+////								this.getProfiableId(),lockId ));
+////				//optor = 1, child starting a new tree, 0 remove, else hanging 
+////				public static int removeNodeSubnodePairforProfilable(long parentnodeid, long childnodeid, long optor)
+//				
+//				//TDOO, you should not it here
+//	   			GraphMessenger.messageque.put(
+//    					new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable, 
+//    							
+//    							ThreadIdProfilableIdMap.getProfilableIdByThreadId(	Thread.currentThread().getId() ), this.getProfiableId(),2));
+// 
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
         }
     }
 

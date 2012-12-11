@@ -15,6 +15,9 @@ public class TNode extends Node {
 			setFillcolor(255,255,0 );
 		} else  
 			setFillcolor(0,255,0 );
+		if (this.isDeadlockednode()) {
+			setFillcolor(255,0,0 );
+		}
 		int ovalsize = (int) (Bag.nodesize * ((double)Bag.OneDoubleequalpixels)) ;
 		Color c = graphics.getColor();
 		drawAlignedOval(graphics,p2d,ovalsize);

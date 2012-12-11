@@ -2,6 +2,7 @@ package javax.util.concurrent.profilable;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+//This is a way to implement thread safe singleton of some sort.
 public class ThreadIdProfilableIdMap extends ConcurrentHashMap<Long, Long> {
 	//Thread.CurrentThread.id, profilableId
 	protected static ThreadIdProfilableIdMap tables = new ThreadIdProfilableIdMap();
@@ -20,6 +21,7 @@ public class ThreadIdProfilableIdMap extends ConcurrentHashMap<Long, Long> {
 		else
 			return -1l;
 	}
+	// TODO May it also needs to remove threadid. But the question, is threadid unique in running instance of JVM?
 	
 	
 

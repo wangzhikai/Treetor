@@ -55,16 +55,14 @@ import java.util.concurrent.locks.AbstractOwnableSynchronizer;
 import java.util.concurrent.locks.Condition;
 
 import javax.util.concurrent.profilable.Profilable;
+import javax.util.concurrent.profilable.ThreadIdProfilableIdMap;
+import javax.util.concurrent.profilable.messenger.FunctorType;
+import javax.util.concurrent.profilable.messenger.GraphMessenger;
+import javax.util.concurrent.profilable.messenger.MessageForGraph;
 //import java.util.concurrent.locks.LockSupport;
 
 import sun.misc.Unsafe;
-//Access restriction: The type Unsafe is not accessible due to restriction on required library 
 
-
-//Go to the Build Path settings in the project properties.
-//Remove the JRE System Library
-//Add it back; Select "Add Library" and select the JRE System Library. The default worked for me.
-// http://stackoverflow.com/questions/860187/access-restriction-on-class-due-to-restriction-on-required-library-rt-jar Last access Nov 25, 2012 
 /**
  * Provides a framework for implementing blocking locks and related
  * synchronizers (semaphores, events, etc) that rely on
@@ -316,10 +314,16 @@ import sun.misc.Unsafe;
 public abstract class ProfilableAbstractQueuedSynchronizer
     extends AbstractOwnableSynchronizer
     implements java.io.Serializable, Profilable {
+	protected final long lockId ;
+	public long getLockId() {
+		return lockId;
+	}
+
 	protected final long profiableId ;
 	public long getProfiableId() {
 		return profiableId;
-	}
+	}	
+	
  
 	private static final long serialVersionUID = 7373984972572414691L;
 
@@ -327,7 +331,8 @@ public abstract class ProfilableAbstractQueuedSynchronizer
      * Creates a new <tt>AbstractQueuedSynchronizer</tt> instance
      * with initial synchronization state of zero.
      */
-    protected ProfilableAbstractQueuedSynchronizer(long profiableId) {
+    protected ProfilableAbstractQueuedSynchronizer(long lockId ,long profiableId) {
+    	this.lockId = lockId; 
     	this.profiableId = profiableId;
     }
 
@@ -691,8 +696,17 @@ public abstract class ProfilableAbstractQueuedSynchronizer
                 if (t.waitStatus <= 0)
                     s = t;
         }
-        if (s != null)
+        if (s != null) {
+   			try {
+				GraphMessenger.messageque.put(
+						new MessageForGraph(FunctorType.removeNodeSubnodePairforProfilable, this.getProfiableId(),
+								ThreadIdProfilableIdMap.getProfilableIdByThreadId( s.thread.getId()), 1));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             ProfilableLockSupport.unpark(s.thread);
+        }
     }
 
     /**

@@ -23,6 +23,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 //import java.awt.geom.*;
 public class ForestMinistry {
+	static protected GraphBorder graphborder = new GraphBorder (0, 0, 0, 0, 0, 0, 0, 0, 0);
+	public static void initGraphBorder(long level,
+			double xmin,double ymin,double zmin,double xmax,double zmax,double ymax,
+			double width,  double height) {
+		graphborder.setValues(level, xmin, ymin, zmin, xmax, zmax, ymax, width, height);
+//		super(level);
+//		this.xmin = xmin;
+//		this.xmax = xmax;
+//		this.ymin = ymin;
+//		this.ymax = ymax;
+//		this.zmin = zmin;
+//		this.zmax = zmax;
+//
+//		this.width = width;
+//		this.height = height;
+	}
+	static public GraphBorder getGraphborder () {
+		return graphborder;
+	}
+
 	static public final Color VITUALEDGECOLOR = new Color(111,111,111);
 	static public final Stroke VITUALEDGESTROKE = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 	//static protected Map<Long, VirtualEdge> virtualedges = new HashMap<Long, VirtualEdge>();
@@ -227,6 +247,78 @@ public class ForestMinistry {
 //		return r;
 //		
 //	}
+	static public int setNodeSubnodePairforProfilable(long fromid,
+			long toid) {
+//		return Node.addNodeSubnodePair( parentnodeid,
+//				childnodeid);
+		//System.out.println("["+parentnodeid+","+childnodeid+"]" );
+		//System.out.println("Node.addNodeSubnodePair("+ parentnodeid+","+childnodeid+");");
+		Node from = Node.allnodes.get(fromid);
+		if (from == null)
+			return -1;
+		Node to = Node.allnodes.get(toid);
+
+		// this is a blocking condition
+		if (from instanceof RNode && from.getParentnode() != null) {
+			Node nodeblocker = from;
+			Node nodeblockee = to;
+			long idblocker = fromid;
+			long idblockee = toid;
+			
+			if ( nodeblocker.getFamilyId() == idblockee)
+				return 1; // already
+			else  {
+				// TODO add attempting edge
+				ForestMinistry.addAVirtaulEdge(idblockee, idblocker);
+				GraphBorder base_graphborder = null;
+				if (Bag.forestministryusepresetgraphborder) {
+					ForestMinistry.constructForest();
+					base_graphborder = ForestMinistry.getGraphborder();
+				} else {
+					base_graphborder = ForestMinistry.constructForest();
+				}
+
+				ForestMinistry.forest2drender(Test.getAResultFilename(),
+						base_graphborder, GraphOrientation.ToptoBottom);
+				
+				//TODO 
+				//child is descendant of parent but not the direct child
+				if (nodeblocker.recursivelyUpTreeFindAncestor(idblockee)  ) {
+					//visulize deadlock do nothing
+					//parent.setFillcolor(255, 0, 0);
+					nodeblockee.setDeadlockednode(true);
+					
+					return -100;
+				} else {
+//					Node nodeblocker = from;
+//					Node nodeblockee = to;
+//					long idblocker = fromid;
+//					long idblockee = toid;
+					
+					//remove attempting edge
+					ForestMinistry.removeAVirtualEdge(idblockee, idblocker);
+					
+					nodeblocker.addAChild(nodeblockee);
+					nodeblockee.setParentnode(nodeblocker);
+					// trees_under_direct_administration.remove(child);
+					trees_under_direct_administration.remove(nodeblockee.getId());
+					if (hangingnodes.containsKey(idblockee))
+						hangingnodes.remove(idblockee);
+					return -200;
+					
+				}
+			}
+		} else {
+
+			from.addAChild(to);
+			to.setParentnode(from);
+			// trees_under_direct_administration.remove(child);
+			trees_under_direct_administration.remove(to.getId());
+			if (hangingnodes.containsKey(toid))
+				hangingnodes.remove(toid);
+			return 1;
+		}
+	}
 	
 	static public int setNodeSubnodePair(long parentnodeid,
 			long childnodeid) {
@@ -320,6 +412,9 @@ public class ForestMinistry {
 		}
 		return gb;
 	}
+	static public void printStaticGraphBorder() {
+		graphborder.print();
+	}
 	static public GraphBorder constructForest() {
 		GraphBorder gb = new GraphBorder(-1l);
 		Iterator<Long> it = trees_under_direct_administration.keySet().iterator();
@@ -381,6 +476,8 @@ public class ForestMinistry {
 				h_remain -= Bag.treeinteveralinforest;
 			}
 		}
+		if (Bag.forestministryupdategraphborder)
+			graphborder.copyValueFrom(gb);
 		return gb;
 	}
 	static public void forest2drender ( String fn,

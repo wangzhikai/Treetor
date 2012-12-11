@@ -31,7 +31,16 @@ public class Node   {
 	protected long id = -1L;
 	protected Node parentnode = null;
 	protected String label;
+	protected boolean deadlockednode = false;
+	
 
+	public boolean isDeadlockednode() {
+		return deadlockednode;
+	}
+
+	public void setDeadlockednode(boolean deadlockednode) {
+		this.deadlockednode = deadlockednode;
+	}
 	protected Point3D renderoffset = new Point3D(0.0d,0.0d,0.0d);
 	
 	
@@ -479,6 +488,17 @@ public class Node   {
 			return 0;
 		else 
 			return parentnode.getId();
+	}
+	
+	public boolean recursivelyUpTreeFindAncestor ( long aid) {
+		if (this.getId() == aid)
+			return true;
+		else {
+			if (this.getParentnode() == null)
+				return false;
+			else
+				return this.getParentnode().recursivelyUpTreeFindAncestor ( aid);
+		}
 	}
 	public boolean addAChild (Node child ) {
 		return subnodes.put(child.getId(), child) != null;

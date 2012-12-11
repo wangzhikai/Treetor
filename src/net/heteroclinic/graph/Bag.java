@@ -16,4 +16,6 @@ public class Bag {
 	public static String testresultfilepath = "c:\\";
 	public static String testunitname = "c:\\";
 	public static String testresultfiletype = ".png";
+	public static boolean forestministryupdategraphborder = true;
+	public static boolean forestministryusepresetgraphborder = false;
 }
