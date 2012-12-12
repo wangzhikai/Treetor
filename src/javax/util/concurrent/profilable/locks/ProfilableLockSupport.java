@@ -1,14 +1,13 @@
 package javax.util.concurrent.profilable.locks;
 /*
- * This file is created by Zhikai/www.heteroclinic.net.
- * It is directly derived from java.util.concurrent.locks.ReentrantLock.
+ * This file is created by Zhikai Wang/www.heteroclinic.net.
+ * It is directly derived from java.util.concurrent.*.
  * All applicable licenses/rights are automatically cascaded to this file.
  * The liability of Zhikai/www.heteroclinic.net to the maximum is stated in the announcement of www.heteroclinic.net.
  * In addition, the usage of this file is restricted to demonstration purposes for the algorithms, solutions, prototypes built/proposed by Zhikai/www.heteroclinic.net.
- * 
- * 
- * 
+ *
  */
+
 /*
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
