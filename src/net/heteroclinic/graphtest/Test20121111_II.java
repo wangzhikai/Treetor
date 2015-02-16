@@ -25,7 +25,8 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
 		
-		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		//Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		Bag.testresultfilepath = "/home/zhikai/Desktop/treetortest/";
 		Bag.testunitname = "LIVELOCK_TEST";
 		Bag.testresultfiletype = ".png";
 		
