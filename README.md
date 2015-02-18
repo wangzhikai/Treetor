@@ -1,9 +1,9 @@
 # Treetor
-Treetor is a acyclic graph (tree/forest) rendering tool. 
+Treetor is an acyclic graph (tree/forest) rendering tool. 
 
 Introduction
 ----
-Treetor is a acyclic graph (tree/forest) rendering tool. It was once aimed to visualize thread/resource dependency graph. This project started in 2012 with Java (TM) implementation. This project is an experimental project for non-commercial purpose. 
+Treetor is an acyclic graph (tree/forest) rendering tool. It was once aimed to visualize thread/resource dependency graph. This project started in 2012 with Java (TM) implementation. This project is an experimental project for non-commercial purpose. 
 
 License
 ----
@@ -13,4 +13,4 @@ QuickStart
 ----
 In package net.heteroclinic.graphtest, locate file Test20121111_II.java, change Bag.testresultfilepath to a folder for output results, execute the main() function of this Java file. The graphic output (.png files) will show a conjectured threads/resources dependency graph.
 
-Treetor is a acyclic graph (tree/forest) rendering tool. 
+Treetor is an acyclic graph (tree/forest) rendering tool. 
