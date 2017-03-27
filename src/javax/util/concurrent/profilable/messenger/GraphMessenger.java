@@ -24,6 +24,7 @@ import net.heteroclinic.graph.Test;
 
 public class GraphMessenger implements Runnable {
 	public static BlockingQueue<MessageForGraph> messageque = new LinkedBlockingQueue<MessageForGraph>();
+	public static volatile boolean stopped = false;
 	protected volatile boolean halted = false;
 
 	public boolean isHalted() {
@@ -46,7 +47,7 @@ public class GraphMessenger implements Runnable {
 		try {
 			startsignal.countDown();
 			boolean reconstructgraph = true;
-			while (!Thread.interrupted() && !halted) {
+			while (!Thread.interrupted() && !halted ) {
 
 				MessageForGraph msg = messageque.take();
 				// System.out.println("hi");

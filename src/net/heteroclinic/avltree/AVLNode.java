@@ -6,8 +6,41 @@ package net.heteroclinic.avltree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import javax.util.concurrent.profilable.ThreadIdProfilableIdMap;
+import javax.util.concurrent.profilable.messenger.FunctorType;
+import javax.util.concurrent.profilable.messenger.GraphMessenger;
+import javax.util.concurrent.profilable.messenger.MessageForGraph;
+
+import net.heteroclinic.graph.Bag;
+import net.heteroclinic.graph.ForestMinistry;
 
 public class AVLNode {
+	
+	public static volatile boolean ready = false;
+	
+	public AVLNode () {
+		profiableId = net.heteroclinic.graph.Node.counter.incrementAndGet();
+		
+	}
+	protected final long profiableId ;
+
+	
+	public long getProfiableId() {
+		return profiableId;
+	}
+	public static void setShow(boolean show) {
+		AVLNode.show = show;
+	}
+	public void setMessages(List<String> messages) {
+		this.messages = messages;
+	}
+	public static volatile boolean show = false;
 	protected List<String> messages = new ArrayList<String>();
 	protected AVLNode parent;
 	public AVLNode parent() {
@@ -79,10 +112,14 @@ public class AVLNode {
 	
 	
 	
-	public static AVLNode addNewNode(final AVLNode parent, final int value) {
+	public static AVLNode addNewNode(final AVLNode parent, final int value) throws InterruptedException {
 		AVLNode result = null;
 		result = new AVLNode();
 		result.setValue(value);
+		if (show ) {
+			GraphMessenger.messageque.put(
+				new MessageForGraph(FunctorType.createATNodeforProfilable, result.getProfiableId(),result.getValue()));
+		}
 		if (parent == null) {
 			return result;
 		} else {
@@ -91,18 +128,32 @@ public class AVLNode {
 		}
 	}
 	
-	protected void addNewNode(final AVLNode newn) {
+	protected void addNewNode(final AVLNode newn) throws InterruptedException {
 		if (getValue() > newn.getValue() ) {
 			if (getLeft()!= null) {
 				getLeft().addNewNode( newn);
 			} else {
 				setLeft(newn);
+				newn.setParent(this);
+				if (show) {
+	    			GraphMessenger.messageque.put(
+	    					new MessageForGraph(FunctorType.setNodeSubnodePairforProfilable, 
+	    							
+	    							this.getProfiableId(),newn.getProfiableId()));
+				}
 			}
 		} else {
 			if (getRight() != null) {
 				getRight().addNewNode(newn);
 			} else {
 				setRight(newn);
+				newn.setParent(this);
+				if (show) {
+	    			GraphMessenger.messageque.put(
+	    					new MessageForGraph(FunctorType.setNodeSubnodePairforProfilable, 
+	    							
+	    							this.getProfiableId(),newn.getProfiableId()));
+				}
 			}
 		}
 	}
@@ -117,10 +168,11 @@ public class AVLNode {
 		}
 	}
 	
-	public static void testInOrderPrint (boolean run) {
+	public static void testInOrderPrint (boolean run) throws InterruptedException {
 		if (!run) {
 			return;
 		}
+		AVLNode.show = false;
 		AVLNode root =  addNewNode(null, 9);
 		addNewNode(root,5);
 		addNewNode(root,17);
@@ -140,10 +192,129 @@ public class AVLNode {
 		//1 3 4 5 6 7 8 9 10 11 13 17 18 21 23 
 	}
 	
-	public static void main(String [] args) {
+	public static void testVisualizeUnbalanced(boolean run) throws InterruptedException {
+		if (!run) {
+			return;
+		}
+		AVLNode.show = true;
+		AVLNode root =  addNewNode(null, 9);
+		addNewNode(root,5);
+		addNewNode(root,17);
+		addNewNode(root,3);
+		addNewNode(root,7);
+		addNewNode(root,11);
+		addNewNode(root,21);
+		addNewNode(root,1);
+		addNewNode(root,4);
+		addNewNode(root,6);
+		addNewNode(root,8);
+		addNewNode(root,10);
+		addNewNode(root,13);
+		addNewNode(root,18);
+		addNewNode(root,23);
+		addNewNode(root,33);
+		addNewNode(root,43);
+		AVLNode.ready = true;
+
+	}
+	
+	public static void testInOrderPrint2(boolean run) throws InterruptedException {
+		if (!run) {
+			return;
+		}
+		AVLNode root =  addNewNode(null, 9);
+		addNewNode(root,5);
+		addNewNode(root,17);
+		addNewNode(root,3);
+		addNewNode(root,7);
+		addNewNode(root,11);
+		addNewNode(root,21);
+		addNewNode(root,1);
+		addNewNode(root,4);
+		addNewNode(root,6);
+		addNewNode(root,8);
+		addNewNode(root,10);
+		addNewNode(root,13);
+		addNewNode(root,18);
+		addNewNode(root,23);
+		addNewNode(root,33);
+		addNewNode(root,43);
+
+		inOrderPrint (root);
+		//1 3 4 5 6 7 8 9 10 11 13 17 18 21 23 33 43 
+	}
+	
+	public static void main(String [] args) throws InterruptedException {
 		{
-			boolean testThisBlock = true;
+			boolean testThisBlock = false;
 			testInOrderPrint (testThisBlock);
+			System.out.println();
+		}
+		{
+			boolean testThisBlock = false;
+			testInOrderPrint2 (testThisBlock);
+			System.out.println();
+		}
+		{
+			// TODO Auto-generated method stub
+			Bag.tierdistance = 10.0d;
+			Bag.nodesize = 2.5d;
+			Bag.nodespace = 1.3d * Bag.nodesize;
+
+			Bag.familydistance = 2.0d * Bag.nodespace;
+			Bag.boderspace = 3.0d * Bag.nodespace;
+			Bag.OneDoubleequalpixels = 15;
+			Bag.fontsize = 14;
+			Bag.fontwidth = 8; // not accurate.
+			Bag.edgetrim = 1.5d; // ratio
+			
+			//Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+			Bag.testresultfilepath = "";
+			Bag.testunitname = "AVLTree";
+			Bag.testresultfiletype = ".png";
+			
+
+			Bag.treeinteveralinforest = 1.0d * Bag.nodespace;
+			
+			
+			
+			// first pass set Bag.forestministryusepresetgraphborder false
+			// second pass set true, change the values with ForestMinistry.initGraphBorder
+			Bag.forestministryusepresetgraphborder =false;
+			if ( Bag.forestministryusepresetgraphborder ) {
+				Bag.forestministryupdategraphborder = false;
+				
+				//ForestMinistry.initGraphBorder(-1,0.0,0.0,0.0,0.0,0.0,0.0,51.375,39.0);
+				ForestMinistry.initGraphBorder(-1,0.0,0.0,0.0,0.0,0.0,0.0,51.375,39.0);
+			} else {
+				Bag.forestministryupdategraphborder = true;
+			}
+			
+			
+			
+			
+			CountDownLatch startSignal = new CountDownLatch(1);
+			
+			List<Future<?>> fl = new ArrayList<Future<?>>();
+			ExecutorService exec = Executors.newCachedThreadPool();
+			
+			fl.add(exec.submit(new GraphMessenger(startSignal)));
+			
+			testVisualizeUnbalanced(true);
+			
+			while (!AVLNode.ready && GraphMessenger.messageque.size()>0) {
+				TimeUnit.MILLISECONDS.sleep(1000);
+			}
+			
+			for (Future<?> f : fl)
+				f.cancel(true);
+			
+			GraphMessenger.stopped = true;
+			exec.shutdown();
+		
+			ForestMinistry.printStaticGraphBorder();
+
+		
 		}
 	}
 	
