@@ -709,6 +709,8 @@ public class Node   {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	public void BFSGraphConstruction () {
 		nodestorender.clear();
 		edgestorender.clear();
