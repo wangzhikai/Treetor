@@ -28,7 +28,11 @@ public class Test20121017 extends Test{
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
 		
-		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		if (args.length > 0) {
+            Bag.testresultfilepath = args[0];
+        } else {
+            Bag.testresultfilepath = "./"; // Default path
+        }
 		Bag.testunitname = "TEST_RTNODE_TREE";
 		Bag.testresultfiletype = ".png";
 

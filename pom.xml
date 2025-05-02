@@ -1,8 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.heteroclinic</groupId>
-  <artifactId>treetordev</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>treetordev</name>
-  <description>treetordev</description>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.heteroclinic</groupId>
+    <artifactId>treetordev</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>treetordev</name>
+    <description>treetordev</description>
+
+    <build>
+        <!-- Use the standard Maven source directory -->
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
 </project>

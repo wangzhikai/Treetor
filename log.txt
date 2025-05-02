@@ -1,0 +1,9 @@
+20250502
+assisted by Copilot
+- change folder structure
+- (Linux Mint) apt install jdk, maven
+- sync with latest Maven requirements
+- Test20121111_II works
+src/net/heteroclinic/graphtest/Test20121111_II.java
+- update README.md
+

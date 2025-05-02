@@ -7,15 +7,15 @@ import java.util.Random;
 import net.heteroclinic.graph.Bag;
 import net.heteroclinic.graph.GraphOrientation;
 import net.heteroclinic.graph.Node;
-import net.heteroclinic.graph.RNode;
-import net.heteroclinic.graph.TNode;
 import net.heteroclinic.graph.Test;
 
-public class Test20121008_I extends Test{
+public class Test20120927_I  extends Test{
 
+
+	// TO construct a binary tree
 	public static void main(String[] args) {
 		Bag.tierdistance = 10.0d;
-		Bag.nodesize = 2.5d;
+		Bag.nodesize = 1.6d;
 		Bag.nodespace = 1.3d * Bag.nodesize;
 
 		Bag.familydistance = 2.0d * Bag.nodespace;
@@ -24,28 +24,27 @@ public class Test20121008_I extends Test{
 		Bag.fontsize = 14;
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
-
+		
 		if (args.length > 0) {
             Bag.testresultfilepath = args[0];
         } else {
             Bag.testresultfilepath = "./"; // Default path
         }
-		Bag.testunitname = "TEST_RNODE_TREE";
+		Bag.testunitname = "CONSTR-OREINT";
 		Bag.testresultfiletype = ".png";
+		
+		//System.out.println(Test.getAResultFilename());
 
 	
 
-		int nodeslimit =getPower(  2,8);
+		int nodeslimit =getPower(  2,3);
 		Node n = new Node();
 		Random rand = new Random(Calendar.getInstance().getTimeInMillis()
-		 		% 111335);
+				% 111335);
 		
 
-		
 		for (int i = 1; i < nodeslimit; i++) {
-			n = new RNode();
-			n.setFillcolor(255, 110, 110);
-
+			n = new Node();
 		}
 		
 
@@ -80,36 +79,30 @@ public class Test20121008_I extends Test{
 		
 		
 		Node.allnodes.get(1l).BFSGraphConstruction();
-//		Node.allnodes.get(1l).image2dRender(
-//				"C:\\Users\\Graphics\\Desktop\\"
-//						+ Calendar.getInstance().getTimeInMillis() + ".png",
-//				GraphOrientation.LefttoRight);
-//		System.out.println("Picture drawn.");
+
 		
 		//TEST TOP to bottom
 		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
 				GraphOrientation.ToptoBottom);
 		System.out.println("Picture drawn.");
 		
-//		Node.allnodes.get(1l).image2dRender(
-//				"C:\\Users\\Graphics\\Desktop\\"
-//						+ Calendar.getInstance().getTimeInMillis() + ".png",
-//				GraphOrientation.RighttoLeft);
-//		System.out.println("Picture drawn.");
-//
-//		
-//		Node.allnodes.get(1l).image2dRender(
-//				"C:\\Users\\Graphics\\Desktop\\"
-//						+ Calendar.getInstance().getTimeInMillis() + ".png",
-//				GraphOrientation.LefttoRight);
-//		System.out.println("Picture drawn.");
-//
-//		Node.allnodes.get(1l).image2dRender(
-//				"C:\\Users\\Graphics\\Desktop\\"
-//						+ Calendar.getInstance().getTimeInMillis() + ".png",
-//				GraphOrientation.BottomtoTop);
-//		System.out.println("Picture drawn.");	
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.RighttoLeft);
+		System.out.println("Picture drawn.");
+
+		
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.LefttoRight);
+		System.out.println("Picture drawn.");
+
+		Node.allnodes.get(1l).image2dRender(Test.getAResultFilename(),
+				GraphOrientation.BottomtoTop);
+		System.out.println("Picture drawn.");	
 		//Node.allnodes.get(1l).BFSprint();
 	}	
 	
+	
+
+
+
 }

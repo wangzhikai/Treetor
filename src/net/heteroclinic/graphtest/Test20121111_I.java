@@ -32,7 +32,11 @@ public class Test20121111_I extends net.heteroclinic.graph.Test {
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
 		
-		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		if (args.length > 0) {
+            Bag.testresultfilepath = args[0];
+        } else {
+            Bag.testresultfilepath = "./"; // Default path
+        }
 		Bag.testunitname = "RTNODE_FOREST";
 		Bag.testresultfiletype = ".png";
 		

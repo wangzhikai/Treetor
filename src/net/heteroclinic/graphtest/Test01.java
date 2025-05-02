@@ -28,7 +28,12 @@ public class Test01 {
 		Color fbl = new Color(0,100,0);
 
 		Font fnt=new Font("SansSerif",1,14);
-
+        // Set Bag.testresultfilepath from args or use a default value
+        if (args.length > 0) {
+            Bag.testresultfilepath = args[0];
+        } else {
+            Bag.testresultfilepath = "./"; // Default path
+        }
 		BufferedImage cpimg =new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 
 		Graphics g = cpimg.createGraphics();
@@ -52,7 +57,7 @@ public class Test01 {
 		//response.setContentType("image/jpeg");
 
 		//OutputStream strm = response.getOutputStream();
-		File f = new File("C:\\Users\\Graphics\\Desktop\\testcaptcha.jpeg");
+		File f = new File( Bag.testresultfilepath+"testcaptcha.jpeg");
 		OutputStream os;
 		try {
 			os = new FileOutputStream(f);

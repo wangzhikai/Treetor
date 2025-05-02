@@ -25,7 +25,12 @@ public class Test20120927_II extends Test {
 		Bag.edgetrim = 1.5d; // ratio
 
 		
-		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
+		if (args.length > 0) {
+            Bag.testresultfilepath = args[0];
+        } else {
+            Bag.testresultfilepath = "./"; // Default path
+        }
+		
 		Bag.testunitname = "CONSTR-OREINT";
 		Bag.testresultfiletype = ".png";
 

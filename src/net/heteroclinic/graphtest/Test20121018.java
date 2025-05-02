@@ -27,8 +27,11 @@ public class Test20121018 extends Test{
 		Bag.fontwidth = 8; // not accurate.
 		Bag.edgetrim = 1.5d; // ratio
 
-		Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
-		Bag.testunitname = "TEST_REMOVE_ONE_R_FROM_RT_TREE";
+		if (args.length > 0) {
+            Bag.testresultfilepath = args[0];
+        } else {
+            Bag.testresultfilepath = "./"; // Default path
+        }
 		Bag.testresultfiletype = ".png";
 		
 		// TODO Auto-generated method stub

@@ -10,20 +10,20 @@ package net.heteroclinic.graph;
 
 public class Bag {
 	
-	public  double tierdistance = 10.0d;
-	public  double nodesize = 1.6d;
-	public  double nodespace = 1.3d * nodesize;
-	//public  final double nearestcousin = 1.5d *nodesize;
-	public  double familydistance = 2.0d * nodespace;
-	public  double treeinteveralinforest = 2.0d * nodespace;
-	public  double boderspace = 3.0d * nodespace;
-	public  int OneDoubleequalpixels = 15;
-	public  int fontsize = 14;
-	public  int fontwidth = 8; // not accurate.
-	public  double edgetrim  = 1.5d ; //ratio
-	public  String testresultfilepath = "c:\\";
-	public  String testunitname = "c:\\";
-	public  String testresultfiletype = ".png";
-	public  boolean forestministryupdategraphborder = true;
-	public  boolean forestministryusepresetgraphborder = false;
+	public static double tierdistance = 10.0d;
+	public static double nodesize = 1.6d;
+	public static double nodespace = 1.3d * nodesize;
+	//public static final double nearestcousin = 1.5d *nodesize;
+	public static double familydistance = 2.0d * nodespace;
+	public static double treeinteveralinforest = 2.0d * nodespace;
+	public static double boderspace = 3.0d * nodespace;
+	public static int OneDoubleequalpixels = 15;
+	public static int fontsize = 14;
+	public static int fontwidth = 8; // not accurate.
+	public static double edgetrim  = 1.5d ; //ratio
+	public static String testresultfilepath = "c:\\";
+	public static String testunitname = "c:\\";
+	public static String testresultfiletype = ".png";
+	public static boolean forestministryupdategraphborder = true;
+	public static boolean forestministryusepresetgraphborder = false;
 }

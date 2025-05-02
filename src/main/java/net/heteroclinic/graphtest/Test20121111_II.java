@@ -26,11 +26,14 @@ public class Test20121111_II extends net.heteroclinic.graph.Test {
 		Bag.edgetrim = 1.5d; // ratio
 		
 		//Bag.testresultfilepath = "C:\\Users\\Graphics\\Desktop\\treetortest\\";
-		if (args.length > 0) {
+        if (args.length > 0) {
             Bag.testresultfilepath = args[0];
         } else {
             Bag.testresultfilepath = "./"; // Default path
         }
+
+
+		//Bag.testresultfilepath = "./";
 		Bag.testunitname = "LIVELOCK_TEST";
 		Bag.testresultfiletype = ".png";
 		
