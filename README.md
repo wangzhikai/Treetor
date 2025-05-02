@@ -19,6 +19,8 @@ java -cp /home/zhikai/Desktop/workspace/Treetor/target/classes net.heteroclinic.
 Change Picture orientation
 java -cp /home/zhikai/Desktop/workspace/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20120927_I  "./"
 
+Draw Tree From Node JS data array
+java -cp /home/zhikai/Desktop/workspace/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20250502_DrawTreeFromJSArray  "./"
 
 
 Introduction
