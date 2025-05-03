@@ -13,14 +13,23 @@ mvn clean package
 ls /pathto/Treetor/target/classes/net/heteroclinic/graphtest/Test20121111_II.class
 java -cp /pathto/Treetor/target/classes net.heteroclinic.graphtest.Test20121111_II
 OR
-java -cp /home/zhikai/Desktop/workspace/Treetor/target/classes net.heteroclinic.graphtest.Test20121111_II "../"
+java -cp /path/Treetor/target/classes net.heteroclinic.graphtest.Test20121111_II "../"
 "../" or choose a different path
 
 Change Picture orientation
-java -cp /home/zhikai/Desktop/workspace/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20120927_I  "./"
+java -cp /path/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20120927_I  "./"
 
 Draw Tree From Node JS data array
-java -cp /home/zhikai/Desktop/workspace/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20250502_DrawTreeFromJSArray  "./"
+java -cp /path/Treetor/target/treetordev-0.0.1-SNAPSHOT.jar net.heteroclinic.graphtest.Test20250502_DrawTreeFromJSArray  "./"
+The array has the information of a full binary tree information. 'null' for empty node. The last layer is truncated. If the array/tree is malformed, the program will complain and stop.
+For rendering limitation, if a right node's parent does not have a left node, we put an dummy node as the left node.
+A sample picture at the "./" folder like JSArrayTree20250502-180510209.png.
+
+
+
+
+
+
 
 
 Introduction

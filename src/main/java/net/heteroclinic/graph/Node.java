@@ -521,6 +521,15 @@ public class Node   {
 		label = ""+id;
 		allnodes.put(this.getId(), this);
 	}
+
+	public Node(String str) {
+		//Node(counter.incrementAndGet());
+		id = counter.incrementAndGet();
+		label = str;
+		allnodes.put(this.getId(), this);
+	}
+
+
 	public Node(long id) {
 		this.id = id;
 		label = ""+id;
